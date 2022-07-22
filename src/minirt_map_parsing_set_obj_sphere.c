@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_map_parsing_set_obj_sphere.c                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:10:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/21 23:27:46 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/22 16:27:00 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	set_sphere(t_map *map, t_obj *sphere, char **args)
 	pos = ft_split(args[1], ',');
 	color = ft_split(args[3], ',');
 	if (set_pos_and_color_sphere(sphere, pos, color)
-		|| color_check(light->color))
+		|| color_check(sphere->color))
 		return (EXIT_FAILURE);
 	free_strs(pos);
 	free_strs(color);
