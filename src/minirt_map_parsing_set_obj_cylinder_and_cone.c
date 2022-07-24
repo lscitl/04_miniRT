@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_map_parsing_set_obj_cylinder_and_con        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:10:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/21 23:26:09 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/22 20:52:04 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	set_cylinder_and_cone(t_map *map, t_obj *obj, char **args)
 	orient = ft_split(args[2], ',');
 	color = ft_split(args[5], ',');
 	if (set_pos_orient_color(obj, pos, orient, color)
-		|| color_check(obj->color) || orient_check(obj->orient))
+		|| orient_check(obj->orient))
 		return (EXIT_FAILURE);
 	free_strs(pos);
 	free_strs(orient);
@@ -48,7 +48,7 @@ static int	set_pos_orient_color(t_obj *obj, char **pos, \
 {
 	char	*pos_end;
 	char	*orient_end;
-	char	*color_end;
+	int		color_tmp;
 	int		i;
 
 	if (args_len_check(pos, 3) || args_len_check(orient, 3)
@@ -59,9 +59,12 @@ static int	set_pos_orient_color(t_obj *obj, char **pos, \
 	{
 		obj->pos[i] = ft_strtod(pos[i], &pos_end);
 		obj->orient[i] = ft_strtod(orient[i], &orient_end);
-		obj->color[i] = (int)ft_strtod(color[i], &color_end);
-		if (*pos_end != 0 || *orient_end != 0 || *color_end != 0)
+		if (*pos_end != 0 || *orient_end != 0 || is_all_digit(color[i]))
 			return (EXIT_FAILURE);
+		color_tmp = ft_atoi(color[i]);
+		if (color_tmp < 0 || color_tmp > 255)
+			return (EXIT_FAILURE);
+		obj->color |= color_tmp << (2 - i) * 8;
 		i++;
 	}
 	return (EXIT_SUCCESS);

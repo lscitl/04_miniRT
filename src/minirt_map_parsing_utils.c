@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_map_parsing_utils.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:58:51 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/21 23:12:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/24 16:15:01 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,14 @@ int	args_len_check(char **args, int len)
 	return (EXIT_FAILURE);
 }
 
-int	color_check(int color[3])
+int	is_all_digit(char *str)
 {
-	int	i;
-
-	i = 0;
-	if (i < 3)
+	if (str == NULL)
+		return (FALSE);
+	while (*str)
 	{
-		if (color[i] < 0 || color[i] > 255)
+		if (!ft_isdigit(*str++))
 			return (EXIT_FAILURE);
-		i++;
 	}
 	return (EXIT_SUCCESS);
 }
@@ -57,15 +55,9 @@ int	orient_check(double orient[3])
 	i = 0;
 	if (i < 3)
 	{
-		if (orient[i] < 0 || orient[i] > 1)
+		if (orient[i] < -1 || orient[i] > 1)
 			return (EXIT_FAILURE);
 		i++;
 	}
 	return (EXIT_SUCCESS);
-}
-
-void	print_strs(char **strs)
-{
-	while (*strs)
-		printf("%s\n", *strs++);
 }

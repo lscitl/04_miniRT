@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt_map_parsing.c                               :+:      :+:    :+:   */
+/*   minirt_map_parsing_main.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/22 16:36:43 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/24 17:26:35 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ t_map	*map_parsing(char *file_path)
 		ft_putendl_fd("minirt: Map Error", 2);
 		exit(EXIT_FAILURE);
 	}
+	print_map(map);
 	return (map);
 }
 
@@ -71,17 +72,9 @@ static void	get_map_data_to_buffer(t_buffer *buf, int fd)
 
 static int	check_invalid_map(t_map *map)
 {
-	int	i;
-
 	if (!map->light || !map->camera || !map->obj)
 		return (EXIT_FAILURE);
-	if (map->ambi_light.bright == 0)
-	{
-		i = 0;
-		while (i < 3)
-			if (map->ambi_light.color[i++] != 0)
-				return (EXIT_SUCCESS);
+	if (map->ambi_light.bright == 0 && map->ambi_light.color == 0)
 		return (EXIT_FAILURE);
-	}
 	return (EXIT_SUCCESS);
 }

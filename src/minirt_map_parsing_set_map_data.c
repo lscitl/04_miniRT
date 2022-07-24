@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_map_parsing_set_map_data.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/21 23:32:18 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/24 16:20:41 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	set_map_data(t_map *map, char **map_args)
 	{
 		replace_all_white_space_to_sp(map_args[i]);
 		args = ft_split(map_args[i], ' ');
-		print_strs(args);
+		// print_strs(args);
 		if (set_params(map, args))
 			return (EXIT_FAILURE);
 		free_strs(args);
