@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/21 23:12:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/24 17:25:56 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ typedef struct s_obj
 	int				type;
 	double			pos[3];
 	double			orient[3];
-	int				color[3];
+	int				color;
 	double			diameter;
 	double			height;
 }	t_obj;
@@ -90,7 +90,7 @@ typedef struct s_obj
 typedef struct s_ambi_light
 {
 	double	bright;
-	int		color[3];
+	int		color;
 }	t_ambi_light;
 
 typedef struct s_camera
@@ -98,14 +98,14 @@ typedef struct s_camera
 	struct s_camera	*next;
 	double			pos[3];
 	double			orient[3];
-	int				angle;
+	double			angle;
 }	t_camera;
 
 typedef struct s_light
 {
 	struct s_light	*next;
 	double			pos[3];
-	int				color[3];
+	int				color;
 	double			bright;
 }	t_light;
 
@@ -127,7 +127,7 @@ typedef struct s_vars
 
 t_map	*map_parsing(char *file_path);
 int		set_map_data(t_map *map, char **map_args);
-void	print_strs(char **strs);
+int		get_color(int color, int target_color);
 
 // minirt_map_parsing_set_light_and_cam.c
 int		set_ambient_light(t_map *map, char **args);
@@ -150,10 +150,11 @@ void	ft_lightadd_back(t_light **lst, t_light *new);
 // minirt_utils_1.c
 void	replace_all_white_space_to_sp(char *str);
 int		args_len_check(char **args, int len);
-int		color_check(int color[3]);
+int		is_all_digit(char *str);
 int		orient_check(double orient[3]);
 
 // debugging
 void	print_strs(char **strs);
+void	print_map(t_map *map);
 
 #endif

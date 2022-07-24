@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_main.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/19 16:33:25 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/24 17:37:44 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,18 @@ int	exit_hook(t_vars *vars)
 {
 	mlx_destroy_window(vars->mlx, vars->win);
 	free_map(vars->map);
-	exit(0);
+	exit(EXIT_SUCCESS);
+}
+
+int	key_hook(int keycode, t_vars *vars)
+{
+	if (keycode == KEY_ESC)
+	{
+		mlx_destroy_window(vars->mlx, vars->win);
+		free_map(vars->map);
+		exit(EXIT_SUCCESS);
+	}
+	return (EXIT_SUCCESS);
 }
 
 int	main(int argc, char **argv)
@@ -50,7 +61,7 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (EXIT_FAILURE);
 	init_var(&vars, argv[1]);
-	// mlx_key_hook(vars.win, &key_hook, &vars);
+	mlx_key_hook(vars.win, &key_hook, &vars);
 	mlx_hook(vars.win, KEY_EVENT_EXIT, 0, &exit_hook, &vars);
 	mlx_loop_hook(vars.mlx, draw_loop, &vars);
 	mlx_loop(vars.mlx);
