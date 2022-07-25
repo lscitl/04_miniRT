@@ -6,39 +6,11 @@
 /*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/25 14:59:47 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/25 16:25:15 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-
-typedef struct s_vec
-{
-	double	x;
-	double	y;
-	double	z;
-}	t_vec;
-
-typedef struct s_color
-{
-	double	r;
-	double	g;
-	double	b;
-}	t_color;
-
-typedef struct s_ray
-{
-	t_vec	orig;
-	t_vec	direction;
-}	t_ray;
-
-typedef struct s_hit_info
-{
-	t_vec	hit_point;
-	t_color	color;
-	double	cos_angle; // vec_dotprod(normal_vector, ray.direction);
-	double	t; // (orig + t * dir) hit object
-}	t_hit_info;
 
 static int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info);
 static int	is_hit_sphere(t_ray ray, t_obj *obj, t_hit_info info);
@@ -100,14 +72,62 @@ int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info)
 	coeff[0] = vec_dotprod(ray.direction, vec_make(obj->orient));
 	coeff[1] = vec_dotprod(vec_minus(ray.orig - vec_make(obj->pos)), vec_make(obj->orient));
 	flag = solve_linear(coeff, root);
-	if (flag < 0)
-		return (-1); // ray does not hit the plane
-	if (flag == 0)
+	if (flag == 0 && root[0] <= info.t && root[0] >= 0) // ray hit the plane at single point
 	{
+		info.t = root[0];
+		info.norm_vec = vec_make(obj->orient);
+		info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
+		return (0);
 	}
-	else // 
+	else if (flag > 0 && info.t < 0) // ray is on the plane
 	{
+		info.t = 0;
+		info.norm_vec = vec_make(obj->orient);
+		info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
+		return (0);
 	}
+	else
+		return (-1); // does not update hit_info
+}
+
+// vec_length(orig + t * dir - obj->pos) == obj->radius
+// what if direction vector is zero vector?
+int	is_hit_sphere(t_ray ray, t_obj *obj, t_hit_info info)
+{
+	double	coeff[3];
+	double	root[3];
+	double	temp;
+	int		flag;
+
+	temp = vec_minus(ray.orig, vec_make(obj->pos));
+	coeff[0] = vec_dotprod(ray.direction, ray.direction);
+	coeff[1] = (double)2 * vec_dotprod(ray.direction, temp);
+	coeff[2] = vec_dotprod(temp, temp) - (obj->radius * obj->radius);
+	flag = solve_quadratic(coeff, root);
+	if (flag == 0 && root[0] <= info.t && root[0] >= 0) // ray hit the sphere at the single point
+	{
+		info.t = root[0];
+		info.norm_vec = vec_make(obj->orient);
+		return (0);
+	}
+	else if (flag > 0) // ray hit the sphere at two points
+	{
+		if (root[0] <= info.t && root[0] >= 0) // check if root[0] is valid
+		{
+			info.t = root[0];
+			info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
+			info.norm_vec = vec_normalize(vec_minus(info.hit_point, vec_make(obj->pos)));
+			return (0);
+		}
+		else if (root[1] <= info.t && root[1] >= 0) // check if root[1] is valid
+		{
+			info.t = root[1];
+			info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
+			info.norm_vec = vec_normalize(vec_minus(info.hit_point, vec_make(obj->pos)));
+			return (0);
+		}
+	}
+	return (-1); // does not update hit_info
 }
 
 // }}}
