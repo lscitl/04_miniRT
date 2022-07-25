@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/25 15:54:47 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/25 16:02:23 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ typedef struct s_hit_info
 {
 	t_vec	hit_point;
 	t_color	color;
-	double	cos_angle; // vec_dotprod(normal_vector, ray.direction);
+	t_vec	norm_vec; // vec_dotprod(normal_vector, ray.direction);
 	double	t; // (orig + t * dir) hit object
 }	t_hit_info;
 
