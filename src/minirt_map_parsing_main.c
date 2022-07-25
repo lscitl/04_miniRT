@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/24 17:26:35 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/25 15:54:59 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,6 @@ static void	get_map_data_to_buffer(t_buffer *buf, int fd)
 static int	check_invalid_map(t_map *map)
 {
 	if (!map->light || !map->camera || !map->obj)
-		return (EXIT_FAILURE);
-	if (map->ambi_light.bright == 0 && map->ambi_light.color == 0)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:58:51 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/24 16:15:01 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/25 15:35:21 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	orient_check(double orient[3])
 	int	i;
 
 	i = 0;
-	if (i < 3)
+	while (i < 3)
 	{
 		if (orient[i] < -1 || orient[i] > 1)
 			return (EXIT_FAILURE);
