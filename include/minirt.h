@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/24 17:25:56 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/25 15:54:47 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,34 @@ typedef struct s_vars
 	t_map	*map;
 	t_data	img;
 }	t_vars;
+
+typedef struct s_vec
+{
+	double	x;
+	double	y;
+	double	z;
+}	t_vec;
+
+typedef struct s_color
+{
+	double	r;
+	double	g;
+	double	b;
+}	t_color;
+
+typedef struct s_ray
+{
+	t_vec	orig;
+	t_vec	direction;
+}	t_ray;
+
+typedef struct s_hit_info
+{
+	t_vec	hit_point;
+	t_color	color;
+	double	cos_angle; // vec_dotprod(normal_vector, ray.direction);
+	double	t; // (orig + t * dir) hit object
+}	t_hit_info;
 
 t_map	*map_parsing(char *file_path);
 int		set_map_data(t_map *map, char **map_args);
