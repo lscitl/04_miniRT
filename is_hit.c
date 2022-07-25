@@ -6,7 +6,7 @@
 /*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/23 13:28:36 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/25 14:59:47 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,11 @@ typedef struct s_hit_info
 	double	t; // (orig + t * dir) hit object
 }	t_hit_info;
 
-int	is_hit(t_ray ray, t_obj *obj, t_hit_info info[2]);
-int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info[2]);
-int	is_hit_sphere(t_ray ray, t_obj *obj, t_hit_info info[2]);
-int	is_hit_cylinder(t_ray ray, t_obj *obj, t_hit_info info[2]);
-int	is_hit_cone(t_ray ray, t_obj *obj, t_hit_info info[2]);
-int	is_hit_background(t_ray ray, t_obj *obj, t_hit_info info[2]);
+static int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info);
+static int	is_hit_sphere(t_ray ray, t_obj *obj, t_hit_info info);
+static int	is_hit_cylinder(t_ray ray, t_obj *obj, t_hit_info info);
+static int	is_hit_cone(t_ray ray, t_obj *obj, t_hit_info info);
+static int	is_hit_background(t_ray ray, t_obj *obj, t_hit_info info);
 
 int	solve_quadratic(double coeff[3], double root[2]);
 int	solve_linear(double coeff[3], double root[2]);
@@ -64,10 +63,9 @@ int	is_zero(double value);
 
 // is_hit functions {{{
 
-// hit 2 points, return 1. hit 1 point -> return 0. no hit -> return -1.
-// set hit information in info[2]
-// if hit infinite ponits -> nearest point at info[0], return 2?
-int	is_hit(t_ray ray, t_obj *obj, t_hit_info info[2])
+// hit return 0. no hit -> return -1.
+// set hit information in info
+int	is_hit(t_ray ray, t_obj *obj, t_hit_info info)
 {
 	if (obj->type == PLANE)
 	{
@@ -93,20 +91,22 @@ int	is_hit(t_ray ray, t_obj *obj, t_hit_info info[2])
 
 // (orig + t * dir - obj->pos) * orient == 0;
 // what if direction vector is zero vector?
-int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info[2])
+int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info)
 {
-	if (is_zero(vec_dotprod(ray.direction, vec_make(obj->orient)))) // ray is parallel to the plane
+	double	coeff[3];
+	double	root[3];
+	int		flag;
+
+	coeff[0] = vec_dotprod(ray.direction, vec_make(obj->orient));
+	coeff[1] = vec_dotprod(vec_minus(ray.orig - vec_make(obj->pos)), vec_make(obj->orient));
+	flag = solve_linear(coeff, root);
+	if (flag < 0)
+		return (-1); // ray does not hit the plane
+	if (flag == 0)
 	{
-		if (is_zero(vec_dotprod(vec_minus(ray.orig, vec_make(obj->pos)), vec_make(obj->orient))))
-		{
-			info[0].hit_point = ray.orig;
-			/* info[0].color = get_color(obj, ray.orig); */
-			info[0].cos_angle = 0;
-			info[0].t = 0;
-			return (1); // ray is on the plane.
-		}
-		else
-			return (-1); // ray does not hit plane
+	}
+	else // 
+	{
 	}
 }
 
