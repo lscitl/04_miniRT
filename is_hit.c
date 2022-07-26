@@ -6,17 +6,18 @@
 /*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/26 16:54:51 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/26 22:50:55 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-static int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info);
-static int	is_hit_sphere(t_ray ray, t_obj *obj, t_hit_info info);
-static int	is_hit_cylinder(t_ray ray, t_obj *obj, t_hit_info info);
-static int	is_hit_cone(t_ray ray, t_obj *obj, t_hit_info info);
-static int	is_hit_background(t_ray ray, t_obj *obj, t_hit_info info);
+static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info);
+static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info);
+static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info);
+static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info);
+static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info);
+static int	is_hit_background(t_ray ray, t_obj_info *obj, t_hit_info *info);
 
 int	solve_quadratic(double coeff[3], double root[2]);
 int	solve_linear(double coeff[3], double root[2]);
@@ -37,7 +38,7 @@ int	is_zero(double value);
 
 // hit return 0. no hit -> return -1.
 // set hit information in info
-int	is_hit(t_ray ray, t_obj *obj, t_hit_info info)
+int	is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
 	if (obj->type == PLANE)
 	{
@@ -51,9 +52,13 @@ int	is_hit(t_ray ray, t_obj *obj, t_hit_info info)
 	{
 		return (is_hit_cylinder(ray, obj, info));
 	}
-	else if (obj->type == cone)
+	else if (obj->type == CONE)
 	{
 		return (is_hit_cone(ray, obj, info));
+	}
+	else if (obj->type == CIRCLE)
+	{
+		return (is_hit_circle(ray, obj, info));
 	}
 	else
 	{
@@ -63,31 +68,31 @@ int	is_hit(t_ray ray, t_obj *obj, t_hit_info info)
 
 // (orig + t * dir - obj->pos) * orient == 0;
 // what if direction vector is zero vector?
-int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info)
+static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
 	double	coeff[3];
 	double	root[3];
 	int		flag;
 
-	coeff[0] = vec_dotprod(ray.direction, vec_make(obj->orient));
-	coeff[1] = vec_dotprod(vec_minus(ray.orig - vec_make(obj->pos)), vec_make(obj->orient));
+	coeff[0] = vec_dotprod(ray.direction, obj->orient);
+	coeff[1] = vec_dotprod(vec_minus(ray.orig - obj->pos), obj->orient);
 	flag = solve_linear(coeff, root);
-	if (flag == 0 && root[0] <= info.t && root[0] >= 0) // ray hit the plane at single point
+	if (flag == 0 && root[0] <= info->t && root[0] >= 0) // ray hit the plane at single point
 	{
-		info.t = root[0];
-		info.norm_vec = vec_make(obj->orient);
-		// info.color = get_color(obj->color);
-		info.color = 0xFFFFFF;
-		info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
+		info->t = root[0];
+		info->norm_vec = obj->orient;
+		// info->color = get_color(obj->color);
+		info->color = 0xFFFFFF;
+		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
 		return (0);
 	}
-	else if (flag > 0 && info.t < 0) // ray is on the plane
+	else if (flag > 0 && info->t < 0) // ray is on the plane
 	{
-		info.t = 0;
-		info.norm_vec = vec_make(obj->orient);
-		// info.color = get_color(obj->color);
-		info.color = 0xFFFFFF;
-		info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
+		info->t = 0;
+		info->norm_vec = obj->orient;
+		// info->color = get_color(obj->color);
+		info->color = 0xFFFFFF;
+		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
 		return (0);
 	}
 	else
@@ -96,40 +101,93 @@ int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info)
 
 // vec_length(orig + t * dir - obj->pos) == obj->radius
 // what if direction vector is zero vector?
-int	is_hit_sphere(t_ray ray, t_obj *obj, t_hit_info info)
+static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
 	double	coeff[3];
 	double	root[3];
 	double	temp;
 	int		flag;
 
-	temp = vec_minus(ray.orig, vec_make(obj->pos));
+	temp = vec_minus(ray.orig, obj->pos);
 	coeff[0] = vec_dotprod(ray.direction, ray.direction);
 	coeff[1] = (double)2 * vec_dotprod(ray.direction, temp);
-	coeff[2] = vec_dotprod(temp, temp) - (obj->radius * obj->radius);
+	coeff[2] = vec_dotprod(temp, temp) - (obj->r_sqare);
 	flag = solve_quadratic(coeff, root);
 	if (flag >= 0) // ray hit the sphere at two points
 	{
-		if (root[0] <= info.t && root[0] >= 0) // check if root[0] is valid
+		if (root[0] <= info->t && root[0] >= 0) // check if root[0] is valid
 		{
-			info.t = root[0];
-			info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
-			info.norm_vec = vec_normalize(vec_minus(info.hit_point, vec_make(obj->pos)));
-			// info.color = get_color(obj->color);
-			info.color = 0xFFFFFF;
+			info->t = root[0];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+			// info->color = get_color(obj->color);
+			info->color = 0xFFFFFF;
 			return (0);
 		}
-		if (flag > 0 && root[1] <= info.t && root[1] >= 0) // check if root[1] is valid
+		if (flag > 0 && root[1] <= info->t && root[1] >= 0) // check if root[1] is valid
 		{
-			info.t = root[1];
-			info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
-			info.norm_vec = vec_normalize(vec_minus(info.hit_point, vec_make(obj->pos)));
-			// info.color = get_color(obj->color);
-			info.color = 0xFFFFFF;
+			info->t = root[1];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+			// info->color = get_color(obj->color);
+			info->color = 0xFFFFFF;
 			return (0);
 		}
 	}
 	return (-1); // does not update hit_info
+}
+
+static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
+{
+	t_vec	v;
+	t_vec	w;
+	t_vec	h;
+	double	coeff[3];
+	double	root[2];
+	int		flag;
+
+	v = ray.direction;
+	w = vec_minus(ray.orig, obj->pos);
+	h = obj->orient;
+	coeff[0] = vec_dotprod(v, v) - vec_dotprod(v, h) * vec_dotprod(v, h);
+	coeff[1] = 2 * vec_dotprod(v, w) - vec_dotprod(v, h) * vec_dotprod(w, h));
+	coeff[2] = vec_dotprod(w, w) - vec_dotprod(w, h) * vec_dotprod(w, h) - obj->r_sqare;
+	flag = solve_quadratic(coeff, root);
+	if (flag >= 0) // ray hit the cylinder at two points
+	{
+		if (root[0] <= info->t && root[0] >= 0) // check if root[0] is valid
+		{
+			info->t = root[0];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+			// info->color = get_color(obj->color);
+			info->color = 0xFFFFFF;
+			return (0);
+		}
+		if (flag > 0 && root[1] <= info->t && root[1] >= 0) // check if root[1] is valid
+		{
+			info->t = root[1];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+			// info->color = get_color(obj->color);
+			info->color = 0xFFFFFF;
+			return (0);
+		}
+	}
+	return (-1);
+}
+
+static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info)
+{
+	t_hit_info	temp;
+	t_vec		dist;
+
+	is_hit_plane(ray, obj, temp);
+	dist = vec_minus(temp.hit_point, obj->pos);
+	if (vec_dotprod(dist, dist) > obj->radius)
+		return (-1);
+	*info = temp;
+	return (0);
 }
 
 // }}}
