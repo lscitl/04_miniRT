@@ -6,7 +6,7 @@
 /*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/25 16:25:15 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/26 16:54:51 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info)
 	{
 		info.t = root[0];
 		info.norm_vec = vec_make(obj->orient);
+		// info.color = get_color(obj->color);
+		info.color = 0xFFFFFF;
 		info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
 		return (0);
 	}
@@ -83,6 +85,8 @@ int	is_hit_plane(t_ray ray, t_obj *obj, t_hit_info info)
 	{
 		info.t = 0;
 		info.norm_vec = vec_make(obj->orient);
+		// info.color = get_color(obj->color);
+		info.color = 0xFFFFFF;
 		info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
 		return (0);
 	}
@@ -104,26 +108,24 @@ int	is_hit_sphere(t_ray ray, t_obj *obj, t_hit_info info)
 	coeff[1] = (double)2 * vec_dotprod(ray.direction, temp);
 	coeff[2] = vec_dotprod(temp, temp) - (obj->radius * obj->radius);
 	flag = solve_quadratic(coeff, root);
-	if (flag == 0 && root[0] <= info.t && root[0] >= 0) // ray hit the sphere at the single point
-	{
-		info.t = root[0];
-		info.norm_vec = vec_make(obj->orient);
-		return (0);
-	}
-	else if (flag > 0) // ray hit the sphere at two points
+	if (flag >= 0) // ray hit the sphere at two points
 	{
 		if (root[0] <= info.t && root[0] >= 0) // check if root[0] is valid
 		{
 			info.t = root[0];
 			info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
 			info.norm_vec = vec_normalize(vec_minus(info.hit_point, vec_make(obj->pos)));
+			// info.color = get_color(obj->color);
+			info.color = 0xFFFFFF;
 			return (0);
 		}
-		else if (root[1] <= info.t && root[1] >= 0) // check if root[1] is valid
+		if (flag > 0 && root[1] <= info.t && root[1] >= 0) // check if root[1] is valid
 		{
 			info.t = root[1];
 			info.hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info.t));
 			info.norm_vec = vec_normalize(vec_minus(info.hit_point, vec_make(obj->pos)));
+			// info.color = get_color(obj->color);
+			info.color = 0xFFFFFF;
 			return (0);
 		}
 	}

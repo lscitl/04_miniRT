@@ -1,6 +1,9 @@
 # ignore .vscode dir
 .vscode
 
+# ignore ctags file
+tags
+
 # ignore .DS_STORE
 .DS_STORE
 
