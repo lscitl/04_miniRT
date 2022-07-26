@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/25 21:26:11 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/26 20:41:01 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,59 @@
 # define KEY_EVENT_PRESS	2
 # define KEY_EVENT_EXIT		17
 
-# define C_RED				0xFF0000
-# define C_GREEN			0xFF00
-# define C_BLUE				0xFF
+// # define C_RED				0xFF0000
+// # define C_GREEN			0xFF00
+// # define C_BLUE				0xFF
+
+# define EPSILON			1e-6
+
+typedef struct s_obj_info
+{
+	int		type;
+	t_vec	pos;
+	t_vec	orient;
+	t_color	color;
+	double	radius;
+	double	r_sqare;
+	double	width;
+	double	height;
+}	t_obj_info;
+
+typedef struct s_ambi_light_info
+{
+	t_color	color;
+	double	bright;
+}	t_ambi_light_info;
+
+typedef struct s_light_info
+{
+	t_vec	pos;
+	t_vec	orient;
+	t_color	color;
+	double	bright;
+}	t_light_info;
+
+typedef struct s_cam_info
+{
+	t_vec	pos;
+	t_vec	orient;
+	double	angle;
+	t_vec	screen;
+	t_vec	x_vec;
+	t_vec	y_vec;
+	double	focal_len;
+}	t_cam_info;
+
+typedef struct s_map_info
+{
+	t_ambi_light_info	ambi_light;
+	t_light_info		*light;
+	t_cam_info			*cam;
+	t_obj_info			*obj;
+	int					light_cnt;
+	int					cam_cnt;
+	int					obj_cnt;
+}	t_map_info;
 
 typedef struct s_data
 {
@@ -59,10 +109,10 @@ typedef struct s_data
 
 typedef struct s_vars
 {
-	void	*mlx;
-	void	*win;
-	t_map	*map;
-	t_data	img;
+	void		*mlx;
+	void		*win;
+	t_map_info	*map;
+	t_data		img;
 }	t_vars;
 
 int		get_color(int color, int target_color);

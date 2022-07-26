@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 20:24:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/25 20:56:23 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/26 19:13:48 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,16 @@ enum e_obj_type
 	PLANE,
 	SPHERE,
 	CYLINDER,
-	CONE
+	CONE,
+	CIRCLE,
+	SQUARE
+};
+
+enum e_lst_type
+{
+	LIGHT,
+	CAMERA,
+	OBJ
 };
 
 typedef struct s_obj
@@ -43,8 +52,6 @@ typedef struct s_obj
 	double			orient[3];
 	int				color;
 	double			diameter;
-	double			radius;
-	double			r_square;
 	double			height;
 }	t_obj;
 
@@ -98,9 +105,9 @@ int		set_sphere(t_map *map, t_obj *sphere, char **args);
 int		set_obj(t_map *map, char **args);
 
 // minirt_parsing_utils_lst.c
-void	ft_objadd_back(t_obj **lst, t_obj *new);
-void	ft_camadd_back(t_camera **lst, t_camera *new);
-void	ft_lightadd_back(t_light **lst, t_light *new);
+int		lst_cnt_obj(t_obj *lst);
+int		lst_cnt(t_list *lst);
+void	ft_lst_node_clear(t_list *lst);
 
 // minirt_utils_1.c
 void	replace_all_white_space_to_sp(char *str);

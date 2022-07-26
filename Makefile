@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/07/25 21:14:30 by seseo            ###   ########.fr        #
+#    Updated: 2022/07/26 19:05:37 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ L_PATH			:=	libft
 M_PATH			:=	mlx
 CC				:=	cc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror
+CFLAGS			:=	-Wall -Wextra -Werror -g
 INC				:=	-Iinclude -I$(M_PATH) -I$(L_PATH)/include
 LIB_PATH		:=	-L$(M_PATH) -L$(L_PATH)
 LIB				:=	-lft -lmlx
