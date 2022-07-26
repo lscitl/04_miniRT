@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/07/25 21:14:30 by seseo            ###   ########.fr        #
+#    Updated: 2022/07/26 08:49:32 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,7 @@ RM				:=	rm -rf
 CFLAGS			:=	-Wall -Wextra -Werror
 INC				:=	-Iinclude -I$(M_PATH) -I$(L_PATH)/include
 LIB_PATH		:=	-L$(M_PATH) -L$(L_PATH)
-LIB				:=	-lft -lmlx
+LIB				:=	-lft -lmlx -lm
 FRAMEWORK		:=	-framework OpenGL -framework AppKit
 
 $(OBJS_DIR)/%.o	:	$(SRCS_DIR)/%.c
