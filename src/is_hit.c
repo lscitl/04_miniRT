@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_hit.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/27 16:34:14 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/27 19:04:40 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,108 +323,4 @@ int	solve_linear(double *coeff, double *root)
 	}
 	root[0] = -coeff[1] / coeff[0];
 	return (0);
-}
-
-// }}}
-
-// t_vec utils {{{
-
-t_vec	vec_make(double value[3])
-{
-	t_vec	result;
-
-	result.x = value[0];
-	result.y = value[1];
-	result.z = value[2];
-	return (result);
-}
-
-double	vec_dotprod(t_vec vec1, t_vec vec2)
-{
-	double	result;
-
-	result = 0;
-	result += vec1.x * vec2.x;
-	result += vec1.y * vec2.y;
-	result += vec1.z * vec2.z;
-	return (result);
-}
-
-t_vec	vec_crossprod(t_vec vec1, t_vec vec2)
-{
-	t_vec	result;
-
-	result.x = vec1.y * vec2.z - vec1.z * vec2.y;
-	result.y = vec1.z * vec2.x - vec1.x * vec2.z;
-	result.z = vec1.x * vec2.y - vec1.y * vec2.z;
-	return (result);
-}
-
-double	vec_length(t_vec vec)
-{
-	return (sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
-}
-
-// if length == 0?
-t_vec	vec_normalize(t_vec vec)
-{
-	t_vec			result;
-	const double	length = vec_length(vec);
-
-	result.x = vec.x / length;
-	result.y = vec.y / length;
-	result.z = vec.z / length;
-	return (result);
-}
-
-double	vec_sin(t_vec vec1, t_vec vec2)
-{
-	t_vec	norm_1;
-	t_vec	norm_2;
-
-	norm_1 = vec_normalize(vec1);
-	norm_2 = vec_normalize(vec2);
-	return (vec_length(vec_crossprod(norm_1, norm_2)));
-}
-
-double	vec_cos(t_vec vec1, t_vec vec2)
-{
-	return (vec_dotprod(vec_normalize(vec1), vec_normalize(vec2)));
-}
-
-t_vec	vec_plus(t_vec vec1, t_vec vec2)
-{
-	t_vec	result;
-
-	result.x = vec1.x + vec2.x;
-	result.y = vec1.y + vec2.y;
-	result.z = vec1.z + vec2.z;
-	return (result);
-}
-
-t_vec	vec_minus(t_vec vec1, t_vec vec2)
-{
-	t_vec	result;
-
-	result.x = vec1.x - vec2.x;
-	result.y = vec1.y - vec2.y;
-	result.z = vec1.z - vec2.z;
-	return (result);
-}
-
-t_vec	vec_scale(t_vec vec1, double scale)
-{
-	t_vec	result;
-
-	result.x = vec1.x * scale;
-	result.y = vec1.y * scale;
-	result.z = vec1.z * scale;
-	return (result);
-}
-
-// }}}
-
-int	is_zero(double value)
-{
-	return (value <= __FLT_EPSILON__ && -value <= __FLT_EPSILON__);
 }
