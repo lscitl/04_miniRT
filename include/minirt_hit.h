@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/25 21:03:54 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/27 14:00:12 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_hit_info
 {
 	t_vec	hit_point;
 	t_color	color;
-	double	cos_angle;
+	t_vec	norm_vec;
 	double	t;
 }	t_hit_info;
 
