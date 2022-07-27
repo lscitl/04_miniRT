@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 17:22:14 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/24 17:44:24 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/27 19:35:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,4 +141,46 @@ void	print_map(t_map *map)
 	print_camera(map->camera);
 	print_light(map->light);
 	print_obj(map->obj);
+}
+
+void	print_map_info(t_map_info *map)
+{
+	int	i;
+
+	printf("Ambi_light\n");
+	printf("\tbright : %f\n", map->ambi_light.bright);
+	printf("\tcolor : %f, %f, %f\n", map->ambi_light.color.r, map->ambi_light.color.g, map->ambi_light.color.b);
+	i = 0;
+	while (i < map->cam_cnt)
+	{
+		printf("Camera idx %d\n", i);
+		printf("\tpos : %f, %f, %f\n", map->cam[i].pos.x, map->cam[i].pos.y, map->cam[i].pos.z);
+		printf("\torient : %f, %f, %f\n", map->cam[i].orient.x, map->cam[i].orient.y, map->cam[i].orient.z);
+		printf("\tangle : %f\n", map->cam[i].angle / M_PI * 180);
+		printf("\tscreen : %f, %f, %f\n", map->cam[i].screen.x, map->cam[i].screen.y, map->cam[i].screen.z);
+		printf("\tfocal_len : %f\n\n", map->cam[i].focal_len);
+		i++;
+	}
+	i = 0;
+	while (i < map->light_cnt)
+	{
+		printf("Light idx %d\n", i);
+		printf("\tpos : %f, %f, %f\n", map->light[i].pos.x, map->light[i].pos.y, map->light[i].pos.z);
+		printf("\tbright : %f\n", map->light[i].bright);
+		printf("\tcolor : %f, %f, %f\n\n", map->light[i].color.r, map->light[i].color.g, map->light[i].color.b);
+		i++;
+	}
+	i = 0;
+	while (i < map->obj_cnt)
+	{
+		printf("Object idx %d\n", i);
+		printf("\tobj_type : %d\n", map->obj[i].type);
+		printf("\tpos : %f, %f, %f\n", map->obj[i].pos.x, map->obj[i].pos.y, map->obj[i].pos.z);
+		printf("\torient : %f, %f, %f\n", map->obj[i].orient.x, map->obj[i].orient.y, map->obj[i].orient.z);
+		printf("\tcolor : %f, %f, %f\n", map->obj[i].color.r, map->obj[i].color.g, map->obj[i].color.b);
+		printf("\tradius : %f\n", map->obj[i].radius);
+		printf("\theight : %f\n", map->obj[i].height);
+		printf("\twidth : %f\n\n", map->obj[i].width);
+		i++;
+	}
 }
