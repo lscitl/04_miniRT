@@ -6,7 +6,7 @@
 /*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/27 16:34:14 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 01:26:48 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			{
 				info->t = root[0];
 				info->hit_point = intersect;
-				info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+				info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
 			}
@@ -174,7 +174,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			{
 				info->t = root[1];
 				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
-				info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+				info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
 			}
@@ -187,7 +187,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		{
 			info->t = root[0];
 			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
-			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+			info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 			info->color = obj->color;
 			return (0);
 		}
@@ -242,7 +242,7 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			{
 				info->t = root[0];
 				info->hit_point = intersect;
-				info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+				info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
 			}
@@ -254,7 +254,7 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			{
 				info->t = root[1];
 				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
-				info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+				info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
 			}
@@ -267,7 +267,7 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		{
 			info->t = root[0];
 			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
-			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+			info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 			info->color = obj->color;
 			return (0);
 		}
