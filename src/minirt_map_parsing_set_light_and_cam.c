@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:01:59 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/24 17:05:47 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/27 17:00:33 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	set_light(t_map *map, char **args)
 		return (EXIT_FAILURE);
 	free_strs(pos);
 	free_strs(color);
-	ft_lightadd_back(&map->light, light);
+	ft_lstadd_back((t_list **)(&map->light), (t_list *)light);
 	return (EXIT_SUCCESS);
 }
 
@@ -83,13 +83,14 @@ static int	set_pos_and_color_light(t_light *light, char **pos, char **color)
 		light->pos[i] = ft_strtod(pos[i], &pos_end);
 		if (*pos_end != 0 || is_all_digit(color[i]))
 			return (EXIT_FAILURE);
-		light->color = 255;
 		if (color)
 		{
 			color_tmp = ft_atoi(color[i]);
 			if (color_tmp < 0 || color_tmp > 255)
 				return (EXIT_FAILURE);
 		}
+		else
+			color_tmp = 255;
 		light->color |= color_tmp << (2 - i) * 8;
 		i++;
 	}
@@ -116,7 +117,7 @@ int	set_camera(t_map *map, char **args)
 		return (EXIT_FAILURE);
 	free_strs(pos);
 	free_strs(orient);
-	ft_camadd_back(&map->camera, cam);
+	ft_lstadd_back((t_list **)(&map->camera), (t_list *)cam);
 	return (EXIT_SUCCESS);
 }
 

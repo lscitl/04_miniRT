@@ -3,65 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_map_parsing_utils_lst.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:20:45 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/21 22:15:45 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/27 15:12:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-void	ft_objadd_back(t_obj **lst, t_obj *new)
+int	lst_cnt(t_list *lst)
 {
-	t_obj	*tmp;
+	int	i;
 
-	tmp = *lst;
-	if (lst && new)
+	i = 0;
+	while (lst)
 	{
-		if (*lst)
-		{
-			while (tmp->next)
-				tmp = tmp->next;
-			tmp->next = new;
-		}
-		else
-			*lst = new;
+		lst = lst->next;
+		i++;
 	}
+	return (i);
 }
 
-void	ft_camadd_back(t_camera **lst, t_camera *new)
+int	lst_cnt_obj(t_obj *lst)
 {
-	t_camera	*tmp;
+	int	i;
 
-	tmp = *lst;
-	if (lst && new)
+	i = 0;
+	while (lst)
 	{
-		if (*lst)
-		{
-			while (tmp->next)
-				tmp = tmp->next;
-			tmp->next = new;
-		}
-		else
-			*lst = new;
+		if (lst->type == CYLINDER)
+			i += 2;
+		else if (lst->type == CONE)
+			i += 1;
+		i++;
+		lst = lst->next;
 	}
+	return (i);
 }
 
-void	ft_lightadd_back(t_light **lst, t_light *new)
+void	ft_lst_node_clear(t_list *lst)
 {
-	t_light	*tmp;
+	t_list	*tmp;
 
-	tmp = *lst;
-	if (lst && new)
+	while (lst)
 	{
-		if (*lst)
-		{
-			while (tmp->next)
-				tmp = tmp->next;
-			tmp->next = new;
-		}
-		else
-			*lst = new;
+		tmp = lst;
+		lst = lst->next;
+		free(tmp);
 	}
 }

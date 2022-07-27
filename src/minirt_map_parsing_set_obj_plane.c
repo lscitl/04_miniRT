@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:10:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/24 16:12:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/26 18:57:36 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	set_plane(t_map *map, t_obj *plane, char **args)
 	free_strs(pos);
 	free_strs(orient);
 	free_strs(color);
-	ft_objadd_back(&map->obj, plane);
+	ft_lstadd_back((t_list **)(&map->obj), (t_list *)plane);
 	return (EXIT_SUCCESS);
 }
 

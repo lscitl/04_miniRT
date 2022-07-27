@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:58:51 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/25 15:35:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/25 22:48:29 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,16 @@ int	is_all_digit(char *str)
 
 int	orient_check(double orient[3])
 {
-	int	i;
+	double	len;
 
-	i = 0;
-	while (i < 3)
-	{
-		if (orient[i] < -1 || orient[i] > 1)
-			return (EXIT_FAILURE);
-		i++;
-	}
+	if (fabs(orient[0]) > 1 || fabs(orient[1]) > 1 || fabs(orient[2]) > 1)
+		return (EXIT_FAILURE);
+	len = orient[0] * orient[0] + orient[1] * orient[1] + orient[2] * orient[2];
+	len = sqrt(len);
+	if (fabs(len) < __DBL_EPSILON__)
+		return (EXIT_FAILURE);
+	orient[0] = orient[0] / len;
+	orient[1] = orient[1] / len;
+	orient[2] = orient[2] / len;
 	return (EXIT_SUCCESS);
 }
