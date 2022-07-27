@@ -6,7 +6,7 @@
 /*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/27 14:06:11 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/27 16:34:14 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info);
-static int	is_within_cylinder(t_vec intersect, t_vec center, t_vec height);
 static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info);
+static int	is_within_obj(t_vec intersect, t_vec center, t_vec height);
 /* static int	is_hit_background(t_ray ray, t_obj_info *obj, t_hit_info *info); */
 
 int			solve_quadratic(double coeff[3], double root[2]);
@@ -158,7 +158,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		if (root[0] <= info->t && root[0] >= 0) // check if root[0] is valid
 		{
 			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
-			if (is_within_cylinder(intersect, obj->pos, vec_plus(obj->pos, vec_scale(obj->orient, obj->height))))
+			if (is_within_obj(intersect, obj->pos, obj->orient))
 			{
 				info->t = root[0];
 				info->hit_point = intersect;
@@ -170,7 +170,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		if (root[1] <= info->t && root[1] >= 0) // check if root[1] is valid
 		{
 			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[1]));
-			if (is_within_cylinder(intersect, obj->pos, vec_plus(obj->pos, vec_scale(obj->orient, obj->height))))
+			if (is_within_obj(intersect, obj->pos, obj->orient))
 			{
 				info->t = root[1];
 				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
@@ -183,7 +183,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	if (flag == 0)
 	{
 		intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
-		if (is_within_cylinder(intersect, obj->pos, vec_plus(obj->pos, vec_scale(obj->orient, obj->height))))
+		if (is_within_obj(intersect, obj->pos, obj->orient))
 		{
 			info->t = root[0];
 			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
@@ -193,16 +193,6 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		}
 	}
 	return (-1);
-}
-
-static int	is_within_cylinder(t_vec intersect, t_vec center, t_vec height)
-{
-	double	projection;
-	double	height_len;
-
-	projection = vec_dotprod(vec_minus(intersect, center), height);
-	height_len = vec_length(height);
-	return (projection >= 0 && projection <= height_len);
 }
 
 static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info)
@@ -218,12 +208,79 @@ static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	return (0);
 }
 
+// (vec_dotprod(u, d) - vec_length(u) * vec_length(d) * cos(theta) == 0)
+// u = ray.orig + t * ray.direction - (obj->pos + obj->orient * obj->height)
+// (temp + t * dir) * d = | temp + t * dir | * | d | * costheta
 static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
-	(void)ray;
-	(void)obj;
-	(void)info;
+	double	cos_square_theta;
+	t_vec	d;
+	t_vec	v;
+	t_vec	u;
+	t_vec	intersect;
+	double	coeff[3];
+	double	root[2];
+	int		flag;
+
+	d = obj->orient;
+	v = ray.direction;
+	u = vec_minus(ray.orig, vec_plus(obj->pos, vec_scale(obj->orient, obj->height)));
+	cos_square_theta = (obj->height * obj->height);
+	cos_square_theta /= (obj->height * obj->height + obj->radius + obj->radius);
+	coeff[0] = vec_dotprod(v, d) * vec_dotprod(v, d) - cos_square_theta;
+	coeff[1] = 2 * (vec_dotprod(v, d) * vec_dotprod(u, d) - cos_square_theta * vec_dotprod(u, v));
+	coeff[2] = vec_dotprod(u, d) * vec_dotprod(u, d) - cos_square_theta * vec_dotprod(u, u);
+	if (is_zero(coeff[0]))
+		return (-1); // XXX
+	flag = solve_quadratic(coeff, root);
+	if (flag > 0) // ray hit the cone at two points
+	{
+		if (root[0] <= info->t && root[0] >= 0) // check if root[0] is valid
+		{
+			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
+			if (is_within_obj(intersect, obj->pos, obj->orient))
+			{
+				info->t = root[0];
+				info->hit_point = intersect;
+				info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+				info->color = obj->color;
+				return (0);
+			}
+		}
+		if (root[1] <= info->t && root[1] >= 0) // check if root[1] is valid
+		{
+			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[1]));
+			if (is_within_obj(intersect, obj->pos, obj->orient))
+			{
+				info->t = root[1];
+				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+				info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+				info->color = obj->color;
+				return (0);
+			}
+		}
+	}
+	if (flag == 0)
+	{
+		intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
+		if (is_within_obj(intersect, obj->pos, obj->orient))
+		{
+			info->t = root[0];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
+			info->color = obj->color;
+			return (0);
+		}
+	}
 	return (-1);
+}
+
+static int	is_within_obj(t_vec intersect, t_vec center, t_vec height)
+{
+	double	projection;
+
+	projection = vec_dotprod(vec_minus(intersect, center), height);
+	return (projection >= 0 && projection <= 1);
 }
 
 // }}}
