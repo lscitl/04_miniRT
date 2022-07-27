@@ -6,19 +6,21 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/26 20:41:01 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/27 19:35:33 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# include <math.h>
 # include <mlx.h>
 # include "minirt_parsing.h"
 # include "minirt_hit.h"
 
 # define _USE_MATH_DEFINES
+
+# define SCRN_WIDTH			800
+# define SCRN_HEIGHT		600
 
 # define TRUE				1
 # define FALSE				0
@@ -58,8 +60,8 @@ typedef struct s_obj_info
 	t_color	color;
 	double	radius;
 	double	r_sqare;
-	double	width;
 	double	height;
+	double	width;
 }	t_obj_info;
 
 typedef struct s_ambi_light_info
@@ -71,7 +73,6 @@ typedef struct s_ambi_light_info
 typedef struct s_light_info
 {
 	t_vec	pos;
-	t_vec	orient;
 	t_color	color;
 	double	bright;
 }	t_light_info;
@@ -80,6 +81,7 @@ typedef struct s_cam_info
 {
 	t_vec	pos;
 	t_vec	orient;
+	t_vec	orient_neg;
 	double	angle;
 	t_vec	screen;
 	t_vec	x_vec;
@@ -115,6 +117,16 @@ typedef struct s_vars
 	t_data		img;
 }	t_vars;
 
+// minirt_utils.c
 int		get_color(int color, int target_color);
+void	free_map_info(t_map_info *map);
+void	free_map(t_map *map);
+
+// minirt_convert_data.c
+void	set_ambi_light_and_light_info(t_vars *vars, t_map *map);
+void	set_cam_info(t_map_info *map, t_camera *cam);
+void	set_obj_info(t_map_info *map, t_obj *obj);
+
+void	print_map_info(t_map_info *map);
 
 #endif

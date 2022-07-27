@@ -6,12 +6,13 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/27 14:00:12 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/27 15:30:26 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_HIT_H
 # define MINIRT_HIT_H
+# include <math.h>
 
 typedef struct s_vec
 {
@@ -46,6 +47,7 @@ typedef struct s_hit_info
 int		solve_quadratic(double coeff[3], double root[2]);
 int		solve_linear(double coeff[3], double root[2]);
 
+t_vec	vec_make(double value[3]);
 double	vec_dotprod(t_vec vec1, t_vec vec2);
 t_vec	vec_crossprod(t_vec vec1, t_vec vec2);
 double	vec_cos(t_vec vec1, t_vec vec2);
