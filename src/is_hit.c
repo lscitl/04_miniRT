@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/29 01:13:20 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/29 01:40:36 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static int	is_within_obj(t_vec intersect, t_obj_info *obj);
 
 static int	update_hit_info(t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
 static t_vec	get_normal_vector(t_vec point, t_obj_info *obj);
+static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj);
 
 int			solve_quadratic(double coeff[3], double root[2]);
 int			solve_linear(double coeff[3], double root[2]);
@@ -79,8 +80,7 @@ static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	double	root[3];
 	int		flag;
 
-	coeff[0] = vec_dotprod(ray.direction, obj->orient);
-	coeff[1] = vec_dotprod(vec_minus(ray.orig, obj->pos), obj->orient);
+	calc_coeff(coeff, ray, obj);
 	flag = solve_linear(coeff, root);
 	if (flag > 0)
 		root[0] = 0;
@@ -97,13 +97,9 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
 	double	coeff[3];
 	double	root[3];
-	t_vec	v;
 	int		flag;
 
-	v = vec_minus(ray.orig, obj->pos);
-	coeff[0] = vec_dotprod(ray.direction, ray.direction);
-	coeff[1] = (double)2 * vec_dotprod(ray.direction, v);
-	coeff[2] = vec_dotprod(v, v) - (obj->r_sqare);
+	calc_coeff(coeff, ray, obj);
 	flag = solve_quadratic(coeff, root);
 	if (flag >= 0) // ray hit the sphere at two points
 	{
@@ -121,20 +117,12 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 
 static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
-	t_vec	v;
-	t_vec	w;
-	t_vec	h;
 	t_vec	intersect;
 	double	coeff[3];
 	double	root[2];
 	int		flag;
 
-	v = ray.direction;
-	w = vec_minus(ray.orig, obj->pos);
-	h = obj->orient;
-	coeff[0] = vec_dotprod(v, v) - vec_dotprod(v, h) * vec_dotprod(v, h);
-	coeff[1] = (double)2 * (vec_dotprod(v, w) - vec_dotprod(v, h) * vec_dotprod(w, h));
-	coeff[2] = vec_dotprod(w, w) - vec_dotprod(w, h) * vec_dotprod(w, h) - obj->r_sqare;
+	calc_coeff(coeff, ray, obj);
 	if (is_zero(coeff[0]))
 		return (-1);
 	flag = solve_quadratic(coeff, root);
@@ -178,27 +166,16 @@ static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info)
 }
 
 // (vec_dotprod(u, d) - vec_length(u) * vec_length(d) * cos(theta) == 0)
-// u = ray.orig + t * ray.direction - (obj->pos + obj->orient * obj->height)
+// u = ray.orig + t * ray.direction - obj->pos
 // (temp + t * dir) * d = | temp + t * dir | * | d | * costheta
 static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
-	double	cos_square_theta;
-	t_vec	d;
-	t_vec	v;
-	t_vec	u;
 	t_vec	intersect;
 	double	coeff[3];
 	double	root[2];
 	int		flag;
 
-	d = obj->orient;
-	v = ray.direction;
-	u = vec_minus(ray.orig, vec_plus(obj->pos, vec_scale(obj->orient, obj->height)));
-	cos_square_theta = (obj->height * obj->height);
-	cos_square_theta /= (obj->height * obj->height + obj->radius * obj->radius);
-	coeff[0] = vec_dotprod(v, d) * vec_dotprod(v, d) - cos_square_theta;
-	coeff[1] = 2 * (vec_dotprod(v, d) * vec_dotprod(u, d) - cos_square_theta * vec_dotprod(u, v));
-	coeff[2] = vec_dotprod(u, d) * vec_dotprod(u, d) - cos_square_theta * vec_dotprod(u, u);
+	calc_coeff(coeff, ray, obj);
 	if (is_zero(coeff[0]))
 		return (-1); // XXX
 	flag = solve_quadratic(coeff, root);
@@ -259,6 +236,43 @@ static int	is_within_obj(t_vec intersect, t_obj_info *obj)
 
 	projection = vec_dotprod(vec_minus(intersect, obj->pos), obj->orient);
 	return (projection >= 0 && projection <= obj->height);
+}
+
+static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
+{
+	t_vec	v;
+	t_vec	w;
+	t_vec	h;
+	double	cos_square_theta;
+
+	h = obj->orient;
+	v = ray.direction;
+	w = vec_minus(ray.orig, obj->pos);
+	if (obj->type == SPHERE)
+	{
+		coeff[0] = vec_dotprod(ray.direction, ray.direction);
+		coeff[1] = (double)2 * vec_dotprod(ray.direction, w);
+		coeff[2] = vec_dotprod(w, w) - (obj->r_sqare);
+	}
+	else if (obj->type == CYLINDER)
+	{
+		coeff[0] = vec_dotprod(v, v) - vec_dotprod(v, h) * vec_dotprod(v, h);
+		coeff[1] = (double)2 * (vec_dotprod(v, w) - vec_dotprod(v, h) * vec_dotprod(w, h));
+		coeff[2] = vec_dotprod(w, w) - vec_dotprod(w, h) * vec_dotprod(w, h) - obj->r_sqare;
+	}
+	else if (obj->type == CONE)
+	{
+		cos_square_theta = (obj->height * obj->height);
+		cos_square_theta /= (obj->height * obj->height + obj->radius * obj->radius);
+		coeff[0] = vec_dotprod(v, h) * vec_dotprod(v, h) - cos_square_theta;
+		coeff[1] = 2 * (vec_dotprod(v, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, v));
+		coeff[2] = vec_dotprod(w, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, w);
+	}
+	else
+	{
+		coeff[0] = vec_dotprod(ray.direction, obj->orient);
+		coeff[1] = vec_dotprod(vec_minus(ray.orig, obj->pos), obj->orient);
+	}
 }
 
 // }}}
