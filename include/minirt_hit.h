@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 21:19:39 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 22:28:55 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ double	vec_length(t_vec vec);
 t_vec	vec_plus(t_vec vec1, t_vec vec2);
 t_vec	vec_minus(t_vec vec1, t_vec vec2);
 t_vec	vec_scale(t_vec vec1, double scale);
+t_vec	vec_ray_at_distance(t_ray ray, double distance);
 int		is_zero(double value);
 
 #endif

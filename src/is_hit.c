@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/28 21:19:57 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/29 01:13:20 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_within_obj(t_vec intersect, t_obj_info *obj);
 /* static int	is_hit_background(t_ray ray, t_obj_info *obj, t_hit_info *info); */
+
+static int	update_hit_info(t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
+static t_vec	get_normal_vector(t_vec point, t_obj_info *obj);
 
 int			solve_quadratic(double coeff[3], double root[2]);
 int			solve_linear(double coeff[3], double root[2]);
@@ -65,7 +68,6 @@ int	is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	else
 	{
 		return (-1);
-		/* return (is_hit_background(ray, obj, info)); // or return -1 ? */
 	}
 }
 
@@ -80,24 +82,14 @@ static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	coeff[0] = vec_dotprod(ray.direction, obj->orient);
 	coeff[1] = vec_dotprod(vec_minus(ray.orig, obj->pos), obj->orient);
 	flag = solve_linear(coeff, root);
-	if (flag == 0 && root[0] <= info->distance && root[0] >= 0) // ray hit the plane at single point
+	if (flag > 0)
+		root[0] = 0;
+	if (flag >= 0 && root[0] <= info->distance && root[0] >= 0)
 	{
-		info->distance = root[0];
-		info->norm_vec = obj->orient;
-		info->color = obj->color;
-		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-		return (0);
-	}
-	else if (flag > 0 && info->distance < 0) // ray is on the plane
-	{
-		info->distance = 0;
-		info->norm_vec = obj->orient;
-		info->color = obj->color;
-		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-		return (0);
+		return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
 	}
 	else
-		return (-1); // does not update hit_info
+		return (-1);
 }
 
 // vec_length(orig + t * dir - obj->pos) == obj->radius
@@ -117,19 +109,11 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	{
 		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
-			info->distance = root[0];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
-			info->color = obj->color;
-			return (0);
+			return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
 		}
 		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
-			info->distance = root[1];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
-			info->color = obj->color;
-			return (0);
+			return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[1]), root[1]));
 		}
 	}
 	return (-1); // does not update hit_info
@@ -154,43 +138,23 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	if (is_zero(coeff[0]))
 		return (-1);
 	flag = solve_quadratic(coeff, root);
-	if (flag > 0) // ray hit the cylinder at two points
+	if (flag >= 0) // ray hit the cylinder at two points
 	{
 		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
-			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
+			intersect = vec_ray_at_distance(ray, root[0]);
 			if (is_within_obj(intersect, obj))
 			{
-				info->distance = root[0];
-				info->hit_point = intersect;
-				info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
-				info->color = obj->color;
-				return (0);
+				return (update_hit_info(info, obj, intersect, root[0]));
 			}
 		}
-		if (root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
+		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
-			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[1]));
+			intersect = vec_ray_at_distance(ray, root[1]);
 			if (is_within_obj(intersect, obj))
 			{
-				info->distance = root[1];
-				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-				info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
-				info->color = obj->color;
-				return (0);
+				return (update_hit_info(info, obj, intersect, root[1]));
 			}
-		}
-	}
-	if (flag == 0)
-	{
-		intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
-		if (is_within_obj(intersect, obj))
-		{
-			info->distance = root[0];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-			info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
-			info->color = obj->color;
-			return (0);
 		}
 	}
 	return (-1);
@@ -242,42 +206,51 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	{
 		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
-			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
+			intersect = vec_ray_at_distance(ray, root[0]);
 			if (is_within_obj(intersect, obj))
 			{
-				info->distance = root[0];
-				info->hit_point = intersect;
-				info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
-				info->color = obj->color;
-				return (0);
+				return (update_hit_info(info, obj, intersect, root[0]));
 			}
 		}
-		if (root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
+		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
-			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[1]));
+			intersect = vec_ray_at_distance(ray, root[1]);
 			if (is_within_obj(intersect, obj))
 			{
-				info->distance = root[1];
-				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-				info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
-				info->color = obj->color;
-				return (0);
+				return (update_hit_info(info, obj, intersect, root[1]));
 			}
-		}
-	}
-	if (flag == 0)
-	{
-		intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
-		if (is_within_obj(intersect, obj))
-		{
-			info->distance = root[0];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
-			info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
-			info->color = obj->color;
-			return (0);
 		}
 	}
 	return (-1);
+}
+
+static int	update_hit_info(t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root)
+{
+	info->distance = root;
+	info->hit_point = hit_point;
+	info->norm_vec = get_normal_vector(hit_point, obj);
+	info->color = obj->color;
+	return (0);
+}
+
+static t_vec	get_normal_vector(t_vec point, t_obj_info *obj)
+{
+	if (obj->type == SPHERE)
+	{
+		return (vec_normalize(vec_minus(point, obj->pos)));
+	}
+	if (obj->type == CYLINDER)
+	{
+		return (vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
+	}
+	if (obj->type == CONE)
+	{
+		return (vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), point), vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
+	}
+	else
+	{
+		return (obj->orient);
+	}
 }
 
 static int	is_within_obj(t_vec intersect, t_obj_info *obj)

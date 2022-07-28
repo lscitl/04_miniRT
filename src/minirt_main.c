@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 18:41:07 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/29 01:16:53 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	test_draw(t_map_info *map)
 		j = 0;
 		while (j < SCRN_WIDTH)
 		{
-			info.t = DBL_MAX;
+			info.distance = DBL_MAX;
 			ray.orig = cam->pos;
 			ray.direction = vec_normalize(vec_plus(vec_plus(cam->screen, \
 							vec_scale(cam->x_vec, j)), \
@@ -98,7 +98,7 @@ void	test_draw(t_map_info *map)
 				is_hit(ray, &map->obj[obj_index], &info);
 				obj_index++;
 			}
-			if (info.t < DBL_MAX)
+			if (info.distance < DBL_MAX)
 				fprintf(stderr, "%d %d %d\n", (int)info.color.r, (int)info.color.g, (int)info.color.b);
 			else
 				fprintf(stderr, "%d %d %d\n", 0, 0, 0);
