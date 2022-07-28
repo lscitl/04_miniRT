@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/28 18:59:01 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 21:19:57 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,20 +80,20 @@ static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	coeff[0] = vec_dotprod(ray.direction, obj->orient);
 	coeff[1] = vec_dotprod(vec_minus(ray.orig, obj->pos), obj->orient);
 	flag = solve_linear(coeff, root);
-	if (flag == 0 && root[0] <= info->t && root[0] >= 0) // ray hit the plane at single point
+	if (flag == 0 && root[0] <= info->distance && root[0] >= 0) // ray hit the plane at single point
 	{
-		info->t = root[0];
+		info->distance = root[0];
 		info->norm_vec = obj->orient;
 		info->color = obj->color;
-		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 		return (0);
 	}
-	else if (flag > 0 && info->t < 0) // ray is on the plane
+	else if (flag > 0 && info->distance < 0) // ray is on the plane
 	{
-		info->t = 0;
+		info->distance = 0;
 		info->norm_vec = obj->orient;
 		info->color = obj->color;
-		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+		info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 		return (0);
 	}
 	else
@@ -115,18 +115,18 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	flag = solve_quadratic(coeff, root);
 	if (flag >= 0) // ray hit the sphere at two points
 	{
-		if (root[0] <= info->t && root[0] >= 0) // check if root[0] is valid
+		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
-			info->t = root[0];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->distance = root[0];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
 			info->color = obj->color;
 			return (0);
 		}
-		if (flag > 0 && root[1] <= info->t && root[1] >= 0) // check if root[1] is valid
+		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
-			info->t = root[1];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->distance = root[1];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 			info->norm_vec = vec_normalize(vec_minus(info->hit_point, obj->pos));
 			info->color = obj->color;
 			return (0);
@@ -156,25 +156,25 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	flag = solve_quadratic(coeff, root);
 	if (flag > 0) // ray hit the cylinder at two points
 	{
-		if (root[0] <= info->t && root[0] >= 0) // check if root[0] is valid
+		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
 			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
 			if (is_within_obj(intersect, obj))
 			{
-				info->t = root[0];
+				info->distance = root[0];
 				info->hit_point = intersect;
 				info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
 			}
 		}
-		if (root[1] <= info->t && root[1] >= 0) // check if root[1] is valid
+		if (root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
 			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[1]));
 			if (is_within_obj(intersect, obj))
 			{
-				info->t = root[1];
-				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+				info->distance = root[1];
+				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 				info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
@@ -186,8 +186,8 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
 		if (is_within_obj(intersect, obj))
 		{
-			info->t = root[0];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->distance = root[0];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 			info->norm_vec = vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 			info->color = obj->color;
 			return (0);
@@ -202,7 +202,7 @@ static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	t_vec		dist;
 	int			flag;
 
-	temp.t = DBL_MAX;
+	temp.distance = DBL_MAX;
 	flag = is_hit_plane(ray, obj, &temp);
 	if (flag < 0)
 		return (-1);
@@ -240,25 +240,25 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	flag = solve_quadratic(coeff, root);
 	if (flag > 0) // ray hit the cone at two points
 	{
-		if (root[0] <= info->t && root[0] >= 0) // check if root[0] is valid
+		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
 			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
 			if (is_within_obj(intersect, obj))
 			{
-				info->t = root[0];
+				info->distance = root[0];
 				info->hit_point = intersect;
 				info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
 			}
 		}
-		if (root[1] <= info->t && root[1] >= 0) // check if root[1] is valid
+		if (root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
 			intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[1]));
 			if (is_within_obj(intersect, obj))
 			{
-				info->t = root[1];
-				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+				info->distance = root[1];
+				info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 				info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 				info->color = obj->color;
 				return (0);
@@ -270,8 +270,8 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		intersect = vec_plus(ray.orig, vec_scale(ray.direction, root[0]));
 		if (is_within_obj(intersect, obj))
 		{
-			info->t = root[0];
-			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->t));
+			info->distance = root[0];
+			info->hit_point = vec_plus(ray.orig, vec_scale(ray.direction, info->distance));
 			info->norm_vec = vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), intersect), vec_crossprod(vec_minus(info->hit_point, obj->pos), obj->orient)));
 			info->color = obj->color;
 			return (0);

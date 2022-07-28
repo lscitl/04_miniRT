@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 12:13:11 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 21:19:39 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct s_hit_info
 	t_vec	hit_point;
 	t_color	color;
 	t_vec	norm_vec;
-	double	t;
+	double	distance;
 }	t_hit_info;
 
 int		solve_quadratic(double coeff[3], double root[2]);
