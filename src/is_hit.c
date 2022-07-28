@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/28 01:28:51 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 17:04:03 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,13 +104,13 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
 	double	coeff[3];
 	double	root[3];
-	t_vec	temp;
+	t_vec	v;
 	int		flag;
 
-	temp = vec_minus(ray.orig, obj->pos);
+	v = vec_minus(ray.orig, obj->pos);
 	coeff[0] = vec_dotprod(ray.direction, ray.direction);
-	coeff[1] = (double)2 * vec_dotprod(ray.direction, temp);
-	coeff[2] = vec_dotprod(temp, temp) - (obj->r_sqare);
+	coeff[1] = (double)2 * vec_dotprod(ray.direction, v);
+	coeff[2] = vec_dotprod(v, v) - (obj->r_sqare);
 	flag = solve_quadratic(coeff, root);
 	if (flag >= 0) // ray hit the sphere at two points
 	{
@@ -148,7 +148,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	w = vec_minus(ray.orig, obj->pos);
 	h = obj->orient;
 	coeff[0] = vec_dotprod(v, v) - vec_dotprod(v, h) * vec_dotprod(v, h);
-	coeff[1] = 2 * vec_dotprod(v, w) - vec_dotprod(v, h) * vec_dotprod(w, h);
+	coeff[1] = (double)2 * (vec_dotprod(v, w) - vec_dotprod(v, h) * vec_dotprod(w, h));
 	coeff[2] = vec_dotprod(w, w) - vec_dotprod(w, h) * vec_dotprod(w, h) - obj->r_sqare;
 	if (is_zero(coeff[0]))
 		return (-1);

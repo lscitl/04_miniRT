@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 16:15:35 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 17:20:44 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,20 +72,21 @@ void	test_draw(t_map_info *map)
 	t_ray		ray;
 
 	cam = map->cam;
-	i = 0;
 	ft_memset(&info, 0, sizeof(t_hit_info));
 	fprintf(stderr, "P3\n%d %d\n255\n", SCRN_WIDTH, SCRN_HEIGHT);
-	while (i < SCRN_WIDTH)
+	i = 0;
+	while (i < SCRN_HEIGHT)
 	{
-		j = SCRN_HEIGHT;
-		while (j--)
+		j = 0;
+		while (j < SCRN_WIDTH)
 		{
 			info.t = DBL_MAX;
 			ray.orig = cam->pos;
-			ray.direction = vec_normalize(vec_plus(vec_plus(vec_plus(cam->screen, \
-							vec_scale(cam->x_vec, i)), \
-						vec_scale(cam->y_vec, j)), cam->pos));
+			ray.direction = vec_normalize(vec_plus(vec_plus(cam->screen, \
+							vec_scale(cam->x_vec, j)), \
+						vec_scale(cam->y_vec, i)));
 			obj_index = 0;
+			/* fprintf(stderr, "%d %d %d\n", (int)(255.999 * i / (SCRN_HEIGHT - 1)), (int)(255.999 * j / (SCRN_WIDTH - 1)), 10); */
 			while (obj_index < map->obj_cnt)
 			{
 				is_hit(ray, &map->obj[obj_index], &info);
@@ -95,6 +96,7 @@ void	test_draw(t_map_info *map)
 				fprintf(stderr, "%d %d %d\n", (int)info.color.r, (int)info.color.g, (int)info.color.b);
 			else
 				fprintf(stderr, "%d %d %d\n", 0, 0, 0);
+			j++;
 		}
 		i++;
 	}
