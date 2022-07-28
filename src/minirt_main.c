@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 17:20:44 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 18:41:07 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,10 @@ int	key_hook(int keycode, t_vars *vars)
 	return (EXIT_SUCCESS);
 }
 
+void	dummy(void)
+{
+}
+
 void	test_draw(t_map_info *map)
 {
 	t_cam_info	*cam;
@@ -86,6 +90,8 @@ void	test_draw(t_map_info *map)
 							vec_scale(cam->x_vec, j)), \
 						vec_scale(cam->y_vec, i)));
 			obj_index = 0;
+			if (i == SCRN_WIDTH / 2 && j == SCRN_HEIGHT / 2)
+				dummy();
 			/* fprintf(stderr, "%d %d %d\n", (int)(255.999 * i / (SCRN_HEIGHT - 1)), (int)(255.999 * j / (SCRN_WIDTH - 1)), 10); */
 			while (obj_index < map->obj_cnt)
 			{
