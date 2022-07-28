@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:00:24 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/27 15:03:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/28 16:48:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_vec	vec_crossprod(t_vec vec1, t_vec vec2)
 
 	result.x = vec1.y * vec2.z - vec1.z * vec2.y;
 	result.y = vec1.z * vec2.x - vec1.x * vec2.z;
-	result.z = vec1.x * vec2.y - vec1.y * vec2.z;
+	result.z = vec1.x * vec2.y - vec1.y * vec2.x;
 	return (result);
 }
 

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 12:14:45 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/28 16:49:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	set_cam_info(t_map_info *map, t_camera *cam)
 		s_center = vec_scale(c->orient, c->focal_len);
 		s_center = vec_plus(s_center, vec_scale(c->x_vec, SCRN_WIDTH / 2 * -1));
 		c->screen = \
-			vec_plus(s_center, vec_scale(c->x_vec, SCRN_HEIGHT / 2 * -1));
+			vec_plus(s_center, vec_scale(c->y_vec, SCRN_HEIGHT / 2 * -1));
 		c++;
 		cam = cam->next;
 	}
@@ -69,22 +69,22 @@ void	set_cam_info(t_map_info *map, t_camera *cam)
 
 static void	set_cam_axis(t_cam_info *cam)
 {
-	static double	y_axis[3] = {0, 1, 0};
 	static double	x_axis[3] = {1, 0, 0};
+	static double	y_axis[3] = {0, 1, 0};
 	const t_vec		x_vec = vec_make(x_axis);
 	const t_vec		y_vec = vec_make(y_axis);
 
 	if (is_zero(fabs(cam->orient.y) - 1) == FALSE)
 	{
-		cam->y_vec = \
-			vec_normalize(vec_crossprod(y_vec, cam->orient_neg));
 		cam->x_vec = \
-			vec_normalize(vec_crossprod(cam->orient_neg, cam->y_vec));
+			vec_normalize(vec_crossprod(y_vec, cam->orient_neg));
+		cam->y_vec = \
+			vec_normalize(vec_crossprod(cam->orient_neg, cam->x_vec));
 	}
 	else
 	{
-		cam->x_vec = vec_normalize(vec_crossprod(x_vec, cam->orient));
-		cam->y_vec = vec_normalize(vec_crossprod(cam->orient_neg, cam->x_vec));
+		cam->y_vec = vec_normalize(vec_crossprod(x_vec, cam->orient));
+		cam->x_vec = vec_normalize(vec_crossprod(cam->orient_neg, cam->y_vec));
 	}
 }
 
