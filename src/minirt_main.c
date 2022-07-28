@@ -6,10 +6,11 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/27 19:41:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/28 16:15:35 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <float.h>
 #include "minirt.h"
 
 void	set_map_info(t_vars *vars, t_map *map)
@@ -61,6 +62,44 @@ int	key_hook(int keycode, t_vars *vars)
 	return (EXIT_SUCCESS);
 }
 
+void	test_draw(t_map_info *map)
+{
+	t_cam_info	*cam;
+	t_hit_info	info;
+	int			i;
+	int			j;
+	int			obj_index;
+	t_ray		ray;
+
+	cam = map->cam;
+	i = 0;
+	ft_memset(&info, 0, sizeof(t_hit_info));
+	fprintf(stderr, "P3\n%d %d\n255\n", SCRN_WIDTH, SCRN_HEIGHT);
+	while (i < SCRN_WIDTH)
+	{
+		j = SCRN_HEIGHT;
+		while (j--)
+		{
+			info.t = DBL_MAX;
+			ray.orig = cam->pos;
+			ray.direction = vec_normalize(vec_plus(vec_plus(vec_plus(cam->screen, \
+							vec_scale(cam->x_vec, i)), \
+						vec_scale(cam->y_vec, j)), cam->pos));
+			obj_index = 0;
+			while (obj_index < map->obj_cnt)
+			{
+				is_hit(ray, &map->obj[obj_index], &info);
+				obj_index++;
+			}
+			if (info.t < DBL_MAX)
+				fprintf(stderr, "%d %d %d\n", (int)info.color.r, (int)info.color.g, (int)info.color.b);
+			else
+				fprintf(stderr, "%d %d %d\n", 0, 0, 0);
+		}
+		i++;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_vars	vars;
@@ -68,9 +107,10 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (EXIT_FAILURE);
 	init_var_and_set_map_data(&vars, argv[1]);
-	mlx_key_hook(vars.win, &key_hook, &vars);
-	mlx_hook(vars.win, KEY_EVENT_EXIT, 0, &exit_hook, &vars);
+	test_draw(vars.map);
+	// mlx_key_hook(vars.win, &key_hook, &vars);
+	// mlx_hook(vars.win, KEY_EVENT_EXIT, 0, &exit_hook, &vars);
 	// mlx_loop_hook(vars.mlx, draw_loop, &vars);
-	mlx_loop(vars.mlx);
+	// mlx_loop(vars.mlx);
 	return (0);
 }

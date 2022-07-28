@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/27 19:35:33 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/28 12:20:17 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,5 +128,7 @@ void	set_cam_info(t_map_info *map, t_camera *cam);
 void	set_obj_info(t_map_info *map, t_obj *obj);
 
 void	print_map_info(t_map_info *map);
+
+int		is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info);
 
 #endif
