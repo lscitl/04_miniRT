@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
+#    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 13:53:10 by seseo             #+#    #+#              #
-#    Updated: 2022/07/19 15:48:20 by seseo            ###   ########.fr        #
+#    Updated: 2022/07/28 11:34:36 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -90,7 +90,7 @@ NAME			:=	libft.a
 LIBC			:=	ar -rcs
 CC				:=	cc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror
+CFLAGS			:=	-Wall -Wextra -Werror -g
 INCLUDE			:=	-Iinclude
 
 ifeq ($(BONUS), true)

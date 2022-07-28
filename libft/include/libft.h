@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 13:32:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/19 15:50:51 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/28 11:38:45 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 
 typedef struct s_list
 {
+	struct s_list	*next;
 	void			*content;
 	char			*value;
-	struct s_list	*next;
 }	t_list;
 
 typedef struct s_buffer
