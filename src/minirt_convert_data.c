@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 16:49:27 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/29 08:26:41 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,7 @@ static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
 	else if (obj_info->type == CONE)
 	{
 		obj_info[1] = obj_info[0];
+		obj_info[1].pos = vec_plus(obj_info[0].pos, vec_scale(obj_info[0].orient, obj_info[0].height));
 		obj_info[1].type = CIRCLE;
 		return (1);
 	}

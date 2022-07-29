@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/29 01:40:36 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/29 13:38:41 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,7 @@ static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
 	}
 	else if (obj->type == CYLINDER)
 	{
-		coeff[0] = vec_dotprod(v, v) - vec_dotprod(v, h) * vec_dotprod(v, h);
+		coeff[0] = (double)1 - vec_dotprod(v, h) * vec_dotprod(v, h);
 		coeff[1] = (double)2 * (vec_dotprod(v, w) - vec_dotprod(v, h) * vec_dotprod(w, h));
 		coeff[2] = vec_dotprod(w, w) - vec_dotprod(w, h) * vec_dotprod(w, h) - obj->r_sqare;
 	}
