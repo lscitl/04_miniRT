@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/29 08:26:41 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/30 21:16:38 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ void	set_ambi_light_and_light_info(t_vars *vars, t_map *map)
 	t_light			*light_parsing;
 	int				i;
 
-	vars->map->ambi_light.color.r = get_color(map->ambi_light.color, RED);
-	vars->map->ambi_light.color.g = get_color(map->ambi_light.color, GREEN);
-	vars->map->ambi_light.color.b = get_color(map->ambi_light.color, BLUE);
+	vars->map->ambi_light.color.r = get_color(map->ambi_light.color, RED) / 255;
+	vars->map->ambi_light.color.g = get_color(map->ambi_light.color, GREEN) / 255;
+	vars->map->ambi_light.color.b = get_color(map->ambi_light.color, BLUE) / 255;
 	vars->map->ambi_light.bright = map->ambi_light.bright;
 	vars->map->light_cnt = lst_cnt((t_list *)map->light);
 	light = ft_malloc(sizeof(t_light_info) * vars->map->light_cnt);
@@ -32,9 +32,9 @@ void	set_ambi_light_and_light_info(t_vars *vars, t_map *map)
 	while (light_parsing)
 	{
 		light[i].bright = light_parsing->bright;
-		light[i].color.r = get_color(light_parsing->color, RED);
-		light[i].color.g = get_color(light_parsing->color, GREEN);
-		light[i].color.b = get_color(light_parsing->color, BLUE);
+		light[i].color.r = get_color(light_parsing->color, RED) / 255 * light_parsing->bright;
+		light[i].color.g = get_color(light_parsing->color, GREEN) / 255 * light_parsing->bright;
+		light[i].color.b = get_color(light_parsing->color, BLUE) / 255 * light_parsing->bright;
 		light[i].pos = vec_make(light_parsing->pos);
 		light_parsing = light_parsing->next;
 		i++;
@@ -100,9 +100,9 @@ void	set_obj_info(t_map_info *map, t_obj *obj)
 		map->obj[i].type = obj->type;
 		map->obj[i].pos = vec_make(obj->pos);
 		map->obj[i].orient = vec_make(obj->orient);
-		map->obj[i].color.r = get_color(obj->color, RED);
-		map->obj[i].color.g = get_color(obj->color, GREEN);
-		map->obj[i].color.b = get_color(obj->color, BLUE);
+		map->obj[i].color.r = get_color(obj->color, RED) / 255;
+		map->obj[i].color.g = get_color(obj->color, GREEN) / 255;
+		map->obj[i].color.b = get_color(obj->color, BLUE) / 255;
 		map->obj[i].radius = obj->diameter / 2;
 		map->obj[i].r_sqare = map->obj[i].radius * map->obj[i].radius;
 		map->obj[i].height = obj->height;
