@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/07/28 12:10:39 by chanhpar         ###   ########.fr        #
+#    Updated: 2022/07/30 23:28:03 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,41 +36,41 @@ SRCS			:=	$(addprefix $(SRCS_DIR)/, $(SRC))
 OBJS			:=	$(SRC:%.c=$(OBJS_DIR)/%.o)
 
 NAME			:=	miniRT
-L_PATH			:=	libft
-L_FT			:=	$(L_PATH)/libft.a
-M_PATH			:=	mlx
-L_MLX			:=	$(M_PATH)/libmlx.dylib
+LFT_PATH		:=	libft
+L_FT			:=	$(LFT_PATH)/libft.a
+MLX_PATH		:=	mlx
+L_MLX			:=	$(MLX_PATH)/libmlx.dylib
 CC				:=	cc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror -g# -fsanitize=address
-INC				:=	-I$(L_PATH)/include -Iinclude -I$(M_PATH)
-LIB_PATH		:=	-L$(M_PATH) -L$(L_PATH)
-LIB				:=	-lft -lmlx -lm
+CFLAGS			:=	-Wall -Wextra -Werror -g -fsanitize=address
+INC				:=	-I$(LFT_PATH)/include -Iinclude -I$(MLX_PATH)
+LIB_PATH		:=	-L$(MLX_PATH) -L$(LFT_PATH)
+LIB				:=	-lft -lmlx
 FRAMEWORK		:=	-framework OpenGL -framework AppKit
 
 $(OBJS_DIR)/%.o	:	$(SRCS_DIR)/%.c
 					@mkdir -p $(@D)
-					$(CC) $(CFLAGS) $(INC) -c $< -o $@
+					@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(NAME)			:	$(OBJS) $(L_FT) $(L_MLX)
 					@cp $(L_MLX) ./
-					$(CC) $(OBJS) $(INC) $(LIB_PATH) $(LIB) $(FRAMEWORK) -o $(NAME)
+					$(CC) $(CFLAGS) $(OBJS) $(INC) $(LIB_PATH) $(LIB) $(FRAMEWORK) -o $(NAME)
 
 $(L_FT)			:
-					@$(MAKE) bonus -C $(L_PATH)
+					@$(MAKE) bonus -C $(LFT_PATH)
 
 $(L_MLX)		:
-					@$(MAKE) -C $(M_PATH)
+					@$(MAKE) -C $(MLX_PATH)
 
 all				:	$(NAME)
 
 clean			:
 					$(RM) $(OBJS)
-					@$(MAKE) -C $(M_PATH) clean
-					@$(MAKE) -C $(L_PATH) clean
+					@$(MAKE) -C $(MLX_PATH) clean
+					@$(MAKE) -C $(LFT_PATH) clean
 
 fclean			:	clean
-					@$(MAKE) -C $(L_PATH) fclean
+					@$(MAKE) -C $(LFT_PATH) fclean
 					$(RM) libmlx.dylib
 					$(RM) $(NAME)
 

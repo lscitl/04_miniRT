@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 12:20:17 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/30 21:51:26 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define MINIRT_H
 
 # include <mlx.h>
+# include <float.h>
 # include "minirt_parsing.h"
 # include "minirt_hit.h"
 
@@ -51,6 +52,17 @@
 // # define C_BLUE				0xFF
 
 # define EPSILON			1e-6
+
+typedef struct s_phong
+{
+	double	ka;
+	double	kd;
+	double	ks;
+	double	alpha;
+	t_color	ambient;
+	t_color	diffuse;
+	t_color	specular;
+}	t_phong;
 
 typedef struct s_obj_info
 {
@@ -119,6 +131,9 @@ typedef struct s_vars
 
 // minirt_utils.c
 int		get_color(int color, int target_color);
+t_color	set_color(double red, double green, double blue);
+t_color	apply_bright(t_color light, double bright);
+t_color	add_color(t_color c1, t_color c2, t_color c3);
 void	free_map_info(t_map_info *map);
 void	free_map(t_map *map);
 
