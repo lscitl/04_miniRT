@@ -6,11 +6,10 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/29 01:16:53 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/07/31 00:18:42 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <float.h>
 #include "minirt.h"
 
 void	set_map_info(t_vars *vars, t_map *map)
@@ -66,6 +65,82 @@ void	dummy(void)
 {
 }
 
+void	set_shadow_flag(t_map_info *map, t_hit_info *info, int *flag)
+{
+	t_hit_info	shadow_info;
+	t_ray		hit_point_to_light;
+	int			obj_index;
+	int			light_index;
+
+	shadow_info.distance = DBL_MAX;
+	light_index = 0;
+	while (light_index < map->light_cnt)
+	{
+		hit_point_to_light.orig = info->hit_point;
+		hit_point_to_light.direction = \
+			vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
+		obj_index = 0;
+		while (obj_index < map->obj_cnt)
+		{
+			is_hit(hit_point_to_light, &map->obj[obj_index], &shadow_info);
+			obj_index++;
+		}
+		if (shadow_info.distance < DBL_MAX && shadow_info.distance > 5)
+		{
+			printf("%f\n", shadow_info.distance);
+			flag[light_index] = 1;
+		}
+		light_index++;
+	}
+}
+
+/*
+color of hit point = ambient +
+				(diffuse + specular)(zero to all light sources)
+Ip = ka * ia + sigma(from 0 to light_cnt)
+				(kd * (Lm dotprod N) * im,d + ks * (Rm dotprod V) ^ alpha * im,s)
+Rm = 2 * (Lm dotprod N) * N - Lm
+*/
+t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v, int *flag)
+{
+	t_phong		param;
+	t_color		point_color;
+	t_color		ambient;
+	t_color		diffuse;
+	t_color		specular;
+	t_vec		light_direction;
+	t_vec		reflect_direction;
+	int			light_index;
+
+	(void)info;
+	(void)v;
+	(void)flag;
+	param.ka = map->ambi_light.bright;
+	param.ks = 0.8;
+	param.alpha = 64;
+	ambient = set_color(map->ambi_light.color.r, map->ambi_light.color.g, map->ambi_light.color.b);
+	ambient = apply_bright(ambient, param.ka);
+	point_color = ambient;
+	light_index = 0;
+	while (light_index < map->light_cnt)
+	{
+		set_shadow_flag(map, info, flag);
+		if (flag[light_index] == 0)
+		{
+			light_direction = vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
+			param.kd = fmax(vec_dotprod(info->norm_vec, light_direction), 0);
+			diffuse = apply_bright(apply_bright(map->light[light_index].color, param.kd), map->light[light_index].bright);
+			reflect_direction = vec_minus(vec_scale(info->norm_vec, 2 * vec_dotprod(light_direction, info->norm_vec)), light_direction);
+			// printf("%f, %f, %f, %f\n", reflect_direction.x, reflect_direction.y, reflect_direction.z, vec_length(reflect_direction));
+			specular = apply_bright(apply_bright(set_color(1, 1, 1), param.ks * pow(vec_dotprod(reflect_direction, v), param.alpha)), map->light[light_index].bright);
+			point_color = add_color(point_color, diffuse, specular);
+			// point_color = add_color(point_color, diffuse, set_color(0, 0, 0));
+		}
+		light_index++;
+	}
+	return (point_color);
+}
+
 void	test_draw(t_map_info *map)
 {
 	t_cam_info	*cam;
@@ -74,8 +149,11 @@ void	test_draw(t_map_info *map)
 	int			j;
 	int			obj_index;
 	t_ray		ray;
+	int			*shadow_flag;
+	t_color		color;
 
 	cam = map->cam;
+	shadow_flag = ft_malloc(sizeof(int) * map->light_cnt);
 	ft_memset(&info, 0, sizeof(t_hit_info));
 	fprintf(stderr, "P3\n%d %d\n255\n", SCRN_WIDTH, SCRN_HEIGHT);
 	i = 0;
@@ -89,17 +167,32 @@ void	test_draw(t_map_info *map)
 			ray.direction = vec_normalize(vec_plus(vec_plus(cam->screen, \
 							vec_scale(cam->x_vec, j)), \
 						vec_scale(cam->y_vec, i)));
-			obj_index = 0;
 			if (i == SCRN_WIDTH / 2 && j == SCRN_HEIGHT / 2)
 				dummy();
-			/* fprintf(stderr, "%d %d %d\n", (int)(255.999 * i / (SCRN_HEIGHT - 1)), (int)(255.999 * j / (SCRN_WIDTH - 1)), 10); */
+			obj_index = 0;
 			while (obj_index < map->obj_cnt)
 			{
 				is_hit(ray, &map->obj[obj_index], &info);
 				obj_index++;
 			}
 			if (info.distance < DBL_MAX)
-				fprintf(stderr, "%d %d %d\n", (int)info.color.r, (int)info.color.g, (int)info.color.b);
+			{
+				ft_memset(shadow_flag, 0, sizeof(int) * map->light_cnt);
+				color = phong_reflection(map, &info, cam->orient_neg, shadow_flag);
+			}
+			if (info.distance < DBL_MAX)
+			{
+				color.r = (color.r * info.color.r * 255);
+				color.g = (color.g * info.color.g * 255);
+				color.b = (color.b * info.color.b * 255);
+				if (color.r > 255)
+					color.r = 255;
+				if (color.g > 255)
+					color.g = 255;
+				if (color.b > 255)
+					color.b = 255;
+				fprintf(stderr, "%d %d %d\n", (int)color.r, (int)color.g, (int)color.b);
+			}
 			else
 				fprintf(stderr, "%d %d %d\n", 0, 0, 0);
 			j++;
