@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 13:53:10 by seseo             #+#    #+#              #
-#    Updated: 2022/07/28 11:34:36 by seseo            ###   ########.fr        #
+#    Updated: 2022/07/30 23:08:53 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -117,7 +117,7 @@ fclean			:	clean
 re				:	fclean
 					@$(MAKE) bonus
 
-bonus			:	all
+bonus			:	$(NAME)
 					@$(MAKE) BONUS=true
 
 .PHONY			:	all clean fclean re bonus
