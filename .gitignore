@@ -20,3 +20,4 @@ miniRT
 *.swiftmodule
 *.swiftsourceinfo
 *.dylib
+*.ppm
