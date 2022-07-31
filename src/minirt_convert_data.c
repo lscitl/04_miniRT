@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/30 21:16:38 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/01 02:18:47 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
 		obj_info[1] = obj_info[0];
 		obj_info[2] = obj_info[0];
 		obj_info[1].type = CIRCLE;
+		obj_info[1].orient = vec_scale(obj_info[1].orient, -1);
 		obj_info[2].type = CIRCLE;
 		obj_info[2].pos = vec_plus(obj_info[0].pos, \
 							vec_scale(obj_info[0].orient, obj_info[0].height));
@@ -126,8 +127,13 @@ static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
 	}
 	else if (obj_info->type == CONE)
 	{
+		obj_info[0].rsq_div_hsq = pow(obj_info[0].radius, 2) \
+										/ pow(obj_info[0].height, 2);
+		obj_info[0].rsq_div_h = pow(obj_info[0].radius, 2) \
+										/ obj_info[0].height;
 		obj_info[1] = obj_info[0];
-		obj_info[1].pos = vec_plus(obj_info[0].pos, vec_scale(obj_info[0].orient, obj_info[0].height));
+		obj_info[1].pos = vec_plus(obj_info[0].pos, \
+							vec_scale(obj_info[0].orient, obj_info[0].height));
 		obj_info[1].type = CIRCLE;
 		return (1);
 	}
