@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/31 00:18:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/01 13:24:39 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v, int *flag)
 	light_index = 0;
 	while (light_index < map->light_cnt)
 	{
-		set_shadow_flag(map, info, flag);
+		/* set_shadow_flag(map, info, flag); */
 		if (flag[light_index] == 0)
 		{
 			light_direction = vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));

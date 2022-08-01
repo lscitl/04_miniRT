@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/07/29 13:38:41 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/01 13:35:35 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_within_obj(t_vec intersect, t_obj_info *obj);
 /* static int	is_hit_background(t_ray ray, t_obj_info *obj, t_hit_info *info); */
 
-static int	update_hit_info(t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
-static t_vec	get_normal_vector(t_vec point, t_obj_info *obj);
+static int	update_hit_info(t_vec dir, t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
+static t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj);
 static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj);
 
 int			solve_quadratic(double coeff[3], double root[2]);
@@ -86,7 +86,7 @@ static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		root[0] = 0;
 	if (flag >= 0 && root[0] <= info->distance && root[0] >= 0)
 	{
-		return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
+		return (update_hit_info(ray.direction, info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
 	}
 	else
 		return (-1);
@@ -105,11 +105,11 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	{
 		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
-			return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
+			return (update_hit_info(ray.direction, info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
 		}
 		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
-			return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[1]), root[1]));
+			return (update_hit_info(ray.direction, info, obj, vec_ray_at_distance(ray, root[1]), root[1]));
 		}
 	}
 	return (-1); // does not update hit_info
@@ -133,7 +133,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			intersect = vec_ray_at_distance(ray, root[0]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[0]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[0]));
 			}
 		}
 		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
@@ -141,7 +141,7 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			intersect = vec_ray_at_distance(ray, root[1]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[1]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[1]));
 			}
 		}
 	}
@@ -186,7 +186,7 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			intersect = vec_ray_at_distance(ray, root[0]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[0]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[0]));
 			}
 		}
 		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
@@ -194,40 +194,46 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 			intersect = vec_ray_at_distance(ray, root[1]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[1]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[1]));
 			}
 		}
 	}
 	return (-1);
 }
 
-static int	update_hit_info(t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root)
+static int	update_hit_info(t_vec dir, t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root)
 {
 	info->distance = root;
 	info->hit_point = hit_point;
-	info->norm_vec = get_normal_vector(hit_point, obj);
+	info->norm_vec = get_normal_vector(dir, hit_point, obj);
 	info->color = obj->color;
 	return (0);
 }
 
-static t_vec	get_normal_vector(t_vec point, t_obj_info *obj)
+static t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj)
 {
+	t_vec	n;
+
+	(void)dir;
 	if (obj->type == SPHERE)
 	{
-		return (vec_normalize(vec_minus(point, obj->pos)));
+		n = (vec_normalize(vec_minus(point, obj->pos)));
 	}
-	if (obj->type == CYLINDER)
+	else if (obj->type == CYLINDER)
 	{
-		return (vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
+		n = (vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
 	}
-	if (obj->type == CONE)
+	else if (obj->type == CONE)
 	{
-		return (vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), point), vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
+		n = (vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), point), vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
 	}
 	else
 	{
-		return (obj->orient);
+		n = (obj->orient);
 	}
+	if (vec_dotprod(n, dir) > EPSILON)
+		return (vec_scale(n, (double)-1));
+	return (n);
 }
 
 static int	is_within_obj(t_vec intersect, t_obj_info *obj)
