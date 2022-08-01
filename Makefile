@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/07/30 23:28:03 by seseo            ###   ########.fr        #
+#    Updated: 2022/08/01 13:22:46 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ MLX_PATH		:=	mlx
 L_MLX			:=	$(MLX_PATH)/libmlx.dylib
 CC				:=	cc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS			:=	-Wall -Wextra -Werror -g# -fsanitize=address
 INC				:=	-I$(LFT_PATH)/include -Iinclude -I$(MLX_PATH)
 LIB_PATH		:=	-L$(MLX_PATH) -L$(LFT_PATH)
 LIB				:=	-lft -lmlx
