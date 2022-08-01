@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/01 21:18:51 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/01 23:02:24 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ typedef struct s_obj_info
 	t_color	color;
 	double	radius;
 	double	r_sqare;
+	double	rsq_div_hsq;
+	double	rsq_div_h;
 	double	cos_square_theta;
 	double	height;
 	double	width;

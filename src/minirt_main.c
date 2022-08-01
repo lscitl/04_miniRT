@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/01 21:32:08 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 00:45:42 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	set_shadow_flag(t_map_info *map, t_hit_info *info, int *flag)
 		}
 		if (shadow_info.distance < DBL_MAX && shadow_info.distance > -EPSILON)
 		{
-			printf("%f\n", shadow_info.distance);
+			// printf("%f\n", shadow_info.distance);
 			flag[light_index] = 1;
 			break ;
 		}
@@ -155,8 +155,8 @@ void	test_draw(t_map_info *map)
 	shadow_flag = ft_malloc(sizeof(int) * map->light_cnt);
 	ft_memset(&info, 0, sizeof(t_hit_info));
 	fprintf(stderr, "P3\n%d %d\n255\n", SCRN_WIDTH, SCRN_HEIGHT);
-	i = 0;
-	while (i < SCRN_HEIGHT)
+	i = SCRN_HEIGHT;
+	while (i > 0)
 	{
 		j = 0;
 		while (j < SCRN_WIDTH)
@@ -196,7 +196,7 @@ void	test_draw(t_map_info *map)
 				fprintf(stderr, "%d %d %d\n", 0, 0, 0);
 			j++;
 		}
-		i++;
+		i--;
 	}
 }
 

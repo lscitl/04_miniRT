@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/01 21:32:24 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 00:38:39 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,7 @@ static int	is_within_obj(t_vec intersect, t_obj_info *obj)
 	double	projection;
 
 	projection = vec_dotprod(vec_minus(intersect, obj->pos), obj->orient);
-	return (projection >= 0 && projection <= obj->height);
+	return (projection >= -EPSILON && projection <= obj->height);
 }
 
 static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
@@ -250,7 +250,10 @@ static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
 	t_vec	v;
 	t_vec	w;
 	t_vec	h;
-	double	cos_square_theta;
+	double	v_dot_h;
+	double	w_dot_h;
+	double	w_dot_v;
+	// double	cos_square_theta;
 
 	h = obj->orient;
 	v = ray.direction;
@@ -263,17 +266,28 @@ static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
 	}
 	else if (obj->type == CYLINDER)
 	{
-		coeff[0] = (double)1 - vec_dotprod(v, h) * vec_dotprod(v, h);
-		coeff[1] = (double)2 * (vec_dotprod(v, w) - vec_dotprod(v, h) * vec_dotprod(w, h));
-		coeff[2] = vec_dotprod(w, w) - vec_dotprod(w, h) * vec_dotprod(w, h) - obj->r_sqare;
+		v_dot_h = vec_dotprod(v, h);
+		w_dot_h = vec_dotprod(w, h);
+		coeff[0] = 1.0 - pow(v_dot_h, 2);
+		coeff[1] = 2.0 * (vec_dotprod(v, w) - v_dot_h * w_dot_h);
+		coeff[2] = vec_dotprod(w, w) - pow(w_dot_h, 2) - obj->r_sqare;
 	}
 	else if (obj->type == CONE)
 	{
-		cos_square_theta = (obj->height * obj->height);
-		cos_square_theta /= (obj->height * obj->height + obj->radius * obj->radius);
-		coeff[0] = vec_dotprod(v, h) * vec_dotprod(v, h) - cos_square_theta;
-		coeff[1] = 2 * (vec_dotprod(v, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, v));
-		coeff[2] = vec_dotprod(w, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, w);
+		v_dot_h = vec_dotprod(v, h);
+		w_dot_h = vec_dotprod(w, h);
+		w_dot_v = vec_dotprod(w, v);
+		// cos_square_theta = (obj->height * obj->height);
+		// cos_square_theta /= (obj->height * obj->height + obj->radius * obj->radius);
+		// coeff[0] = vec_dotprod(v, h) * vec_dotprod(v, h) - cos_square_theta;
+		// coeff[1] = 2 * (vec_dotprod(v, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, v));
+		// coeff[2] = vec_dotprod(w, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, w);
+		coeff[0] = 1.0 - (1.0 + obj->rsq_div_hsq) * pow(v_dot_h, 2);
+		coeff[1] = 2.0 * (vec_dotprod(w, v) + obj->rsq_div_h * v_dot_h - (1.0 + obj->rsq_div_hsq) * w_dot_h * v_dot_h);
+		coeff[2] = vec_dotprod(w, w) - (1.0 + obj->rsq_div_hsq) * pow(w_dot_h, 2) - obj->r_sqare + 2.0 * obj->rsq_div_h * w_dot_h;
+		// coeff[0] = 1.0 - (1.0 + obj->rsq_div_hsq) * v_dot_h * v_dot_h;
+		// coeff[1] = 2.0 * (w_dot_v - (1.0 + obj->rsq_div_hsq) * v_dot_h * w_dot_h);
+		// coeff[2] = vec_dotprod(w, w) - (1.0 + obj->rsq_div_hsq) * w_dot_h * w_dot_h;
 	}
 	else
 	{
