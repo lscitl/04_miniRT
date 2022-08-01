@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:58:51 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/25 22:48:29 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/30 19:49:38 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	orient_check(double orient[3])
 		return (EXIT_FAILURE);
 	len = orient[0] * orient[0] + orient[1] * orient[1] + orient[2] * orient[2];
 	len = sqrt(len);
-	if (fabs(len) < __DBL_EPSILON__)
+	if (fabs(len) < EPSILON)
 		return (EXIT_FAILURE);
 	orient[0] = orient[0] / len;
 	orient[1] = orient[1] / len;

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/01 13:24:39 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/01 21:32:08 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,19 +76,21 @@ void	set_shadow_flag(t_map_info *map, t_hit_info *info, int *flag)
 	light_index = 0;
 	while (light_index < map->light_cnt)
 	{
-		hit_point_to_light.orig = info->hit_point;
+		// hit_point_to_light.orig = info->hit_point;
 		hit_point_to_light.direction = \
 			vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
+		hit_point_to_light.orig = vec_plus(info->hit_point, vec_scale(hit_point_to_light.direction, 0.1));
 		obj_index = 0;
 		while (obj_index < map->obj_cnt)
 		{
 			is_hit(hit_point_to_light, &map->obj[obj_index], &shadow_info);
 			obj_index++;
 		}
-		if (shadow_info.distance < DBL_MAX && shadow_info.distance > 5)
+		if (shadow_info.distance < DBL_MAX && shadow_info.distance > -EPSILON)
 		{
 			printf("%f\n", shadow_info.distance);
 			flag[light_index] = 1;
+			break ;
 		}
 		light_index++;
 	}
@@ -112,11 +114,8 @@ t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v, int *flag)
 	t_vec		reflect_direction;
 	int			light_index;
 
-	(void)info;
-	(void)v;
-	(void)flag;
 	param.ka = map->ambi_light.bright;
-	param.ks = 0.8;
+	param.ks = 0.5;
 	param.alpha = 64;
 	ambient = set_color(map->ambi_light.color.r, map->ambi_light.color.g, map->ambi_light.color.b);
 	ambient = apply_bright(ambient, param.ka);
@@ -124,15 +123,15 @@ t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v, int *flag)
 	light_index = 0;
 	while (light_index < map->light_cnt)
 	{
-		/* set_shadow_flag(map, info, flag); */
+		set_shadow_flag(map, info, flag);
 		if (flag[light_index] == 0)
 		{
 			light_direction = vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
 			param.kd = fmax(vec_dotprod(info->norm_vec, light_direction), 0);
 			diffuse = apply_bright(apply_bright(map->light[light_index].color, param.kd), map->light[light_index].bright);
-			reflect_direction = vec_minus(vec_scale(info->norm_vec, 2 * vec_dotprod(light_direction, info->norm_vec)), light_direction);
+			reflect_direction = vec_minus(vec_scale(info->norm_vec, 2.0 * vec_dotprod(light_direction, info->norm_vec)), light_direction);
 			// printf("%f, %f, %f, %f\n", reflect_direction.x, reflect_direction.y, reflect_direction.z, vec_length(reflect_direction));
-			specular = apply_bright(apply_bright(set_color(1, 1, 1), param.ks * pow(vec_dotprod(reflect_direction, v), param.alpha)), map->light[light_index].bright);
+			specular = apply_bright(apply_bright(map->light->color, param.ks * pow(vec_dotprod(reflect_direction, v), param.alpha)), map->light[light_index].bright);
 			point_color = add_color(point_color, diffuse, specular);
 			// point_color = add_color(point_color, diffuse, set_color(0, 0, 0));
 		}
@@ -175,22 +174,22 @@ void	test_draw(t_map_info *map)
 				is_hit(ray, &map->obj[obj_index], &info);
 				obj_index++;
 			}
+			// if (info.distance < DBL_MAX)
+			// {
+			// }
 			if (info.distance < DBL_MAX)
 			{
 				ft_memset(shadow_flag, 0, sizeof(int) * map->light_cnt);
 				color = phong_reflection(map, &info, cam->orient_neg, shadow_flag);
-			}
-			if (info.distance < DBL_MAX)
-			{
+				if (color.r > 1)
+					color.r = 1;
+				if (color.g > 1)
+					color.g = 1;
+				if (color.b > 1)
+					color.b = 1;
 				color.r = (color.r * info.color.r * 255);
 				color.g = (color.g * info.color.g * 255);
 				color.b = (color.b * info.color.b * 255);
-				if (color.r > 255)
-					color.r = 255;
-				if (color.g > 255)
-					color.g = 255;
-				if (color.b > 255)
-					color.b = 255;
 				fprintf(stderr, "%d %d %d\n", (int)color.r, (int)color.g, (int)color.b);
 			}
 			else

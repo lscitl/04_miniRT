@@ -6,13 +6,16 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 22:28:55 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/01 15:48:26 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_HIT_H
 # define MINIRT_HIT_H
+
 # include <math.h>
+
+# define EPSILON			1e-6
 
 typedef struct s_vec
 {
@@ -42,6 +45,7 @@ typedef struct s_hit_info
 	t_color	color;
 	t_vec	norm_vec;
 	double	distance;
+	int		direction;
 }	t_hit_info;
 
 int		solve_quadratic(double coeff[3], double root[2]);

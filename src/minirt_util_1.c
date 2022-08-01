@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 19:58:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/30 22:11:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/01 21:14:30 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	get_color(int color, int target_color)
 {
-	return ((color >> target_color * 8) & 0xFF);
+	return ((color >> (target_color * 8)) & 0xFF);
 }
 
 t_color	set_color(double red, double green, double blue)
