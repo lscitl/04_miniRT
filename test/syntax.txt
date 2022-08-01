@@ -1,0 +1,17 @@
+[Ambient]
+A ratio R,G,B
+
+[Light]
+L x,y,z ratio R,G,B
+
+[Camera]
+C x,y,z dx,dy,dz fov
+
+[Plane]
+pl x,y,z nx,ny,nz R,G,B
+
+[Sphere]
+sp x,y,z diameter R,G,B
+
+[Cylinder]
+cy x,y,z dx,dy,dz diameter height R,G,B
