@@ -6,11 +6,12 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 15:32:06 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/02 20:25:39 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+#include "minirt_hit.h"
 
 void	set_map_info(t_vars *vars, t_map *map)
 {

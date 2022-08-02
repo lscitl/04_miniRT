@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/01 23:02:24 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 20:29:34 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <mlx.h>
 # include <float.h>
 # include "minirt_parsing.h"
-# include "minirt_hit.h"
+# include "minirt_math.h"
 
 # define _USE_MATH_DEFINES
 
@@ -50,7 +50,6 @@
 // # define C_RED				0xFF0000
 // # define C_GREEN			0xFF00
 // # define C_BLUE				0xFF
-
 
 typedef struct s_phong
 {
@@ -145,7 +144,5 @@ void	set_cam_info(t_map_info *map, t_camera *cam);
 void	set_obj_info(t_map_info *map, t_obj *obj);
 
 void	print_map_info(t_map_info *map);
-
-int		is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info);
 
 #endif

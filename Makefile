@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/02 20:01:38 by chanhpar         ###   ########.fr        #
+#    Updated: 2022/08/02 20:26:53 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,11 +25,12 @@ SRC				:=	minirt_main.c \
 					minirt_map_parsing_set_obj.c \
 					minirt_map_parsing_utils_lst.c \
 					minirt_map_parsing_utils.c \
-					minirt_math_vec_utils_1.c \
-					minirt_math_vec_utils_2.c \
-					minirt_math_vec_utils_3.c \
+					minirt_math_utils_1.c \
+					minirt_math_utils_2.c \
+					minirt_math_utils_3.c \
 					minirt_util_1.c \
 					minirt_is_hit.c \
+					minirt_is_hit_utils.c \
 					print_map_for_debugging.c
 
 SRCS			:=	$(addprefix $(SRCS_DIR)/, $(SRC))
