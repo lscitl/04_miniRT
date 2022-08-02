@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 20:29:16 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/02 21:05:10 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,8 @@ int		is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info);
 int		update_hit_info(t_vec dir, t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
 int		is_within_obj(t_vec intersect, t_obj_info *obj);
 void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj);
+
+// minirt_phong_and_shadow.c
+t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v);
 
 #endif

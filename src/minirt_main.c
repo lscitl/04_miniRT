@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 20:25:39 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/02 21:45:41 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int	draw_loop(t_vars *vars)
 // close button press event
 int	exit_hook(t_vars *vars)
 {
+	mlx_destroy_image(vars->mlx, vars->img.img);
 	mlx_destroy_window(vars->mlx, vars->win);
 	free_map_info(vars->map);
 	exit(EXIT_SUCCESS);
@@ -55,145 +56,12 @@ int	key_hook(int keycode, t_vars *vars)
 {
 	if (keycode == KEY_ESC)
 	{
+		mlx_destroy_image(vars->mlx, vars->img.img);
 		mlx_destroy_window(vars->mlx, vars->win);
 		free_map_info(vars->map);
 		exit(EXIT_SUCCESS);
 	}
 	return (EXIT_SUCCESS);
-}
-
-void	dummy(void)
-{
-}
-
-int	set_shadow_flag(t_map_info *map, t_hit_info *info, int light_index)
-{
-	t_hit_info	shadow_info;
-	t_ray		hit_point_to_light;
-	int			obj_index;
-
-	shadow_info.distance = DBL_MAX;
-	// hit_point_to_light.orig = info->hit_point;
-	hit_point_to_light.direction = \
-								   vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
-	hit_point_to_light.orig = vec_plus(info->hit_point, vec_scale(hit_point_to_light.direction, 0.1));
-	obj_index = 0;
-	while (obj_index < map->obj_cnt)
-	{
-		is_hit(hit_point_to_light, &map->obj[obj_index], &shadow_info);
-		obj_index++;
-	}
-	if (shadow_info.distance < (EPSILON + vec_length(vec_minus(map->light[light_index].pos, hit_point_to_light.orig)))  && shadow_info.distance > -EPSILON)
-	{
-		// printf("%f\n", shadow_info.distance);
-		return (TRUE);
-	}
-	return (FALSE);
-}
-
-/*
-color of hit point = ambient +
-				(diffuse + specular)(zero to all light sources)
-Ip = ka * ia + sigma(from 0 to light_cnt)
-				(kd * (Lm dotprod N) * im,d + ks * (Rm dotprod V) ^ alpha * im,s)
-Rm = 2 * (Lm dotprod N) * N - Lm
-*/
-t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v)
-{
-	t_phong		param;
-	t_color		point_color;
-	t_color		ambient;
-	t_color		diffuse;
-	t_color		specular;
-	t_vec		light_direction;
-	t_vec		reflect_direction;
-	int			light_index;
-	int			shadow_flag;
-
-	param.ka = map->ambi_light.bright;
-	param.ks = 0.5;
-	param.alpha = 64;
-	ambient = set_color(map->ambi_light.color.r, map->ambi_light.color.g, map->ambi_light.color.b);
-	ambient = apply_bright(ambient, param.ka);
-	point_color = ambient;
-	light_index = 0;
-	while (light_index < map->light_cnt)
-	{
-		shadow_flag = set_shadow_flag(map, info, light_index);
-		if (shadow_flag == FALSE)
-		{
-			light_direction = vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
-			param.kd = fmax(vec_dotprod(info->norm_vec, light_direction), 0);
-			diffuse = apply_bright(apply_bright(map->light[light_index].color, param.kd), map->light[light_index].bright);
-			reflect_direction = vec_minus(vec_scale(info->norm_vec, 2.0 * vec_dotprod(light_direction, info->norm_vec)), light_direction);
-			// printf("%f, %f, %f, %f\n", reflect_direction.x, reflect_direction.y, reflect_direction.z, vec_length(reflect_direction));
-			specular = apply_bright(apply_bright(map->light->color, param.ks * pow(vec_dotprod(reflect_direction, v), param.alpha)), map->light[light_index].bright);
-			point_color = add_color(point_color, diffuse, specular);
-			// point_color = add_color(point_color, diffuse, set_color(0, 0, 0));
-		}
-		light_index++;
-	}
-	return (point_color);
-}
-
-void	test_draw(t_map_info *map)
-{
-	t_cam_info	*cam;
-	t_hit_info	info;
-	int			i;
-	int			j;
-	int			obj_index;
-	t_ray		ray;
-	/* int			*shadow_flag; */
-	t_color		color;
-
-	cam = map->cam;
-	/* shadow_flag = ft_malloc(sizeof(int) * map->light_cnt); */
-	ft_memset(&info, 0, sizeof(t_hit_info));
-	fprintf(stderr, "P3\n%d %d\n255\n", SCRN_WIDTH, SCRN_HEIGHT);
-	i = SCRN_HEIGHT;
-	while (i > 0)
-	{
-		j = 0;
-		while (j < SCRN_WIDTH)
-		{
-			info.distance = DBL_MAX;
-			ray.orig = cam->pos;
-			ray.direction = vec_normalize(vec_plus(vec_plus(cam->screen, \
-							vec_scale(cam->x_vec, j)), \
-						vec_scale(cam->y_vec, i)));
-			if (i == SCRN_WIDTH / 2 && j == SCRN_HEIGHT / 2)
-				dummy();
-			obj_index = 0;
-			while (obj_index < map->obj_cnt)
-			{
-				is_hit(ray, &map->obj[obj_index], &info);
-				obj_index++;
-			}
-			// if (info.distance < DBL_MAX)
-			// {
-			// }
-			if (info.distance < DBL_MAX)
-			{
-				/* ft_memset(shadow_flag, 0, sizeof(int) * map->light_cnt); */
-				color = phong_reflection(map, &info, cam->orient_neg);
-				if (color.r > 1)
-					color.r = 1;
-				if (color.g > 1)
-					color.g = 1;
-				if (color.b > 1)
-					color.b = 1;
-				color.r = (color.r * info.color.r * 255);
-				color.g = (color.g * info.color.g * 255);
-				color.b = (color.b * info.color.b * 255);
-				fprintf(stderr, "%d %d %d\n", (int)color.r, (int)color.g, (int)color.b);
-			}
-			else
-				fprintf(stderr, "%d %d %d\n", 0, 0, 0);
-			j++;
-		}
-		i--;
-	}
 }
 
 int	main(int argc, char **argv)
@@ -203,10 +71,10 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		return (EXIT_FAILURE);
 	init_var_and_set_map_data(&vars, argv[1]);
-	test_draw(vars.map);
-	// mlx_key_hook(vars.win, &key_hook, &vars);
-	// mlx_hook(vars.win, KEY_EVENT_EXIT, 0, &exit_hook, &vars);
+	mlx_key_hook(vars.win, &key_hook, &vars);
+	mlx_hook(vars.win, KEY_EVENT_EXIT, 0, &exit_hook, &vars);
+	draw_image(&vars, vars.map, vars.map->cam);
 	// mlx_loop_hook(vars.mlx, draw_loop, &vars);
-	// mlx_loop(vars.mlx);
+	mlx_loop(vars.mlx);
 	return (0);
 }
