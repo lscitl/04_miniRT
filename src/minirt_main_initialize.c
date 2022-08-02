@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 22:47:53 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 23:48:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,10 @@ void	init_var_and_set_map_data(t_vars *vars, char *arg)
 
 static void	set_map_info(t_vars *vars, t_map *map)
 {
-	set_ambi_light_and_light_info(vars, map);
+	set_ambi_light_and_light_info(vars->map, map, map->ambi_light);
 	ft_lst_node_clear((t_list *)map->light);
 	set_cam_info(vars->map, map->camera);
 	ft_lst_node_clear((t_list *)map->camera);
 	set_obj_info(vars->map, map->obj);
 	ft_lst_node_clear((t_list *)map->obj);
-	// print_map_info(vars->map);
 }

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:53:53 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 21:57:13 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 00:51:56 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static double	is_in_shadow(t_map_info *map, t_hit_info *info, \
 
 /*
 color of hit point = ambient +
-				(diffuse + specular)(zero to all light sources)
-Ip = ka * ia + sigma(from 0 to light_cnt)
+				(diffuse + specular)(for all light sources)
+Ip = ka * ia + sigma[from 0 to light_cnt - 1]
 				(kd * (Lm dotprod N) * im,d + ks * (Rm dotprod V) ^ alpha * im,s)
 Rm = 2 * (Lm dotprod N) * N - Lm
 */
@@ -59,7 +59,7 @@ static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
 	hit_point.direction = \
 		vec_normalize(vec_minus(light_pos, info->hit_point));
 	hit_point.orig = \
-		vec_plus(info->hit_point, vec_scale(hit_point.direction, 0.1));
+		vec_plus(info->hit_point, vec_scale(hit_point.direction, EPSILON));
 	obj_index = 0;
 	while (obj_index < map->obj_cnt)
 	{
@@ -73,9 +73,14 @@ static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
 	return (vec_len);
 }
 
-void	print_t_color(t_color color)
+double	get_light_len_square(double light_len)
 {
-	printf("%f, %f, %f\n", color.r, color.g, color.b);
+	const int	k = 4000;
+
+	light_len *= light_len;
+	if (light_len < k)
+		return (1);
+	return (light_len / k);
 }
 
 static void	apply_diffuse_and_specular(t_hit_info *info, t_light_info light, \
@@ -87,7 +92,7 @@ static void	apply_diffuse_and_specular(t_hit_info *info, t_light_info light, \
 	double	l_dot_m;
 	double	r_dot_v_alpha;
 
-	bright = light.bright; // * 1000.0 / (param->light_len * param->light_len);
+	bright = light.bright / get_light_len_square(param->light_len);
 	light_direction = vec_normalize(vec_minus(light.pos, info->hit_point));
 	param->kd = fmax(vec_dotprod(info->norm_vec, light_direction), 0);
 	param->diffuse = apply_bright(light.color, param->kd * bright);

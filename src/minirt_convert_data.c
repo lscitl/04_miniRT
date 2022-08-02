@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 22:50:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 23:44:56 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,37 +15,38 @@
 static void	set_cam_axis(t_cam_info *cam);
 static int	set_cylinder_and_cone_info(t_obj_info *obj_info);
 
-void	set_ambi_light_and_light_info(t_vars *vars, t_map *map)
+void	set_ambi_light_and_light_info(t_map_info *map_info, t_map *map, \
+													t_ambi_light ambi_light)
 {
-	t_light_info	*light;
-	t_light			*light_parsing;
-	int				i;
+	t_light_info		*light_info;
+	t_light				*light;
+	int					i;
 
-	vars->map->ambi_light.color.r = get_color(map->ambi_light.color, RED) / 255;
-	vars->map->ambi_light.color.g = get_color(map->ambi_light.color, GREEN) / 255;
-	vars->map->ambi_light.color.b = get_color(map->ambi_light.color, BLUE) / 255;
-	vars->map->ambi_light.bright = map->ambi_light.bright;
-	vars->map->light_cnt = lst_cnt((t_list *)map->light);
-	light = ft_malloc(sizeof(t_light_info) * vars->map->light_cnt);
-	light_parsing = map->light;
+	map_info->ambi_light.color.r = get_color(ambi_light.color, RED) / 255.0;
+	map_info->ambi_light.color.g = get_color(ambi_light.color, GREEN) / 255.0;
+	map_info->ambi_light.color.b = get_color(ambi_light.color, BLUE) / 255.0;
+	map_info->ambi_light.bright = ambi_light.bright;
+	map_info->light_cnt = lst_cnt((t_list *)map->light);
+	light_info = ft_malloc(sizeof(t_light_info) * map_info->light_cnt);
+	light = map->light;
 	i = 0;
-	while (light_parsing)
+	while (light)
 	{
-		light[i].bright = light_parsing->bright;
-		light[i].color.r = get_color(light_parsing->color, RED) / 255 * light_parsing->bright;
-		light[i].color.g = get_color(light_parsing->color, GREEN) / 255 * light_parsing->bright;
-		light[i].color.b = get_color(light_parsing->color, BLUE) / 255 * light_parsing->bright;
-		light[i].pos = vec_make(light_parsing->pos);
-		light_parsing = light_parsing->next;
+		light_info[i].bright = light->bright;
+		light_info[i].color.r = get_color(light->color, RED) / 255.0;
+		light_info[i].color.g = get_color(light->color, GREEN) / 255.0;
+		light_info[i].color.b = get_color(light->color, BLUE) / 255.0;
+		light_info[i].pos = vec_make(light->pos);
+		light = light->next;
 		i++;
 	}
-	vars->map->light = light;
+	map_info->light = light_info;
 }
 
 void	set_cam_info(t_map_info *map, t_camera *cam)
 {
 	t_cam_info	*c;
-	t_vec		s_center;
+	t_vec		center;
 	int			i;
 
 	map->cam_cnt = lst_cnt((t_list *)cam);
@@ -59,10 +60,10 @@ void	set_cam_info(t_map_info *map, t_camera *cam)
 		c[i].angle = cam->angle / 180 * M_PI;
 		c[i].focal_len = SCRN_WIDTH / (2 * atan(c[i].angle / 2));
 		set_cam_axis(c);
-		s_center = vec_scale(c[i].orient, c[i].focal_len);
-		s_center = vec_plus(s_center, vec_scale(c[i].x_vec, SCRN_WIDTH / 2 * -1));
+		center = vec_scale(c[i].orient, c[i].focal_len);
+		center = vec_plus(center, vec_scale(c[i].x_vec, SCRN_WIDTH / 2 * -1));
 		c[i].screen = \
-			vec_plus(s_center, vec_scale(c[i].y_vec, SCRN_HEIGHT / 2 * -1));
+				vec_plus(center, vec_scale(c[i].y_vec, SCRN_HEIGHT / 2 * -1));
 		i++;
 		cam = cam->next;
 	}
@@ -129,10 +130,8 @@ static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
 	}
 	else if (obj_info->type == CONE)
 	{
-		obj_info[0].rsq_div_hsq = pow(obj_info[0].radius, 2) \
-										/ pow(obj_info[0].height, 2);
-		obj_info[0].rsq_div_h = pow(obj_info[0].radius, 2) \
-										/ obj_info[0].height;
+		obj_info[0].rsq_div_h = obj_info[0].r_sqare / obj_info[0].height;
+		obj_info[0].rsq_div_hsq = obj_info[0].rsq_div_h / obj_info[0].height;
 		obj_info[1] = obj_info[0];
 		obj_info[1].type = CIRCLE;
 		return (1);

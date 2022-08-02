@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:09:43 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 21:25:38 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 01:13:42 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,20 @@ static t_color	adjust_color(t_hit_info *info, t_color color)
 		color.g = 1;
 	if (color.b > 1)
 		color.b = 1;
+	// if (color.r == 1 && color.g == 1 && color.b == 1)
+	// {
+	// 	color.r = 255;
+	// 	color.g = 255;
+	// 	color.b = 255;
+	// 	return (color);
+	// }
+	if (color.r > .93 && color.g > .93 && color.b > .93)
+	{
+		color.r *= 255;
+		color.g *= 255;
+		color.b *= 255;
+		return (color);
+	}
 	color.r = color.r * info->color.r * 255;
 	color.g = color.g * info->color.g * 255;
 	color.b = color.b * info->color.b * 255;

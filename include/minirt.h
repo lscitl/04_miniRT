@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 22:49:01 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 23:28:23 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,8 @@ typedef struct s_vars
 }	t_vars;
 
 // minirt_convert_data.c
-void	set_ambi_light_and_light_info(t_vars *vars, t_map *map);
+void	set_ambi_light_and_light_info(t_map_info *map_info, t_map *map, \
+													t_ambi_light ambi_light);
 void	set_cam_info(t_map_info *map, t_camera *cam);
 void	set_obj_info(t_map_info *map, t_obj *obj);
 
