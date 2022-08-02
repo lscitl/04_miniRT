@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 21:05:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 22:00:57 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ typedef struct s_hit_info
 
 int		is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info);
 
-int		update_hit_info(t_vec dir, t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
-int		is_within_obj(t_vec intersect, t_obj_info *obj);
+int		update_hit_info(t_ray ray, t_hit_info *info, t_obj_info *obj, double root);
 void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj);
 
 // minirt_phong_and_shadow.c
