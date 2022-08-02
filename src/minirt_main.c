@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 00:45:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 15:19:30 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,35 +65,29 @@ void	dummy(void)
 {
 }
 
-void	set_shadow_flag(t_map_info *map, t_hit_info *info, int *flag)
+int	set_shadow_flag(t_map_info *map, t_hit_info *info, int light_index)
 {
 	t_hit_info	shadow_info;
 	t_ray		hit_point_to_light;
 	int			obj_index;
-	int			light_index;
 
 	shadow_info.distance = DBL_MAX;
-	light_index = 0;
-	while (light_index < map->light_cnt)
+	// hit_point_to_light.orig = info->hit_point;
+	hit_point_to_light.direction = \
+								   vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
+	hit_point_to_light.orig = vec_plus(info->hit_point, vec_scale(hit_point_to_light.direction, 0.1));
+	obj_index = 0;
+	while (obj_index < map->obj_cnt)
 	{
-		// hit_point_to_light.orig = info->hit_point;
-		hit_point_to_light.direction = \
-			vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
-		hit_point_to_light.orig = vec_plus(info->hit_point, vec_scale(hit_point_to_light.direction, 0.1));
-		obj_index = 0;
-		while (obj_index < map->obj_cnt)
-		{
-			is_hit(hit_point_to_light, &map->obj[obj_index], &shadow_info);
-			obj_index++;
-		}
-		if (shadow_info.distance < DBL_MAX && shadow_info.distance > -EPSILON)
-		{
-			// printf("%f\n", shadow_info.distance);
-			flag[light_index] = 1;
-			break ;
-		}
-		light_index++;
+		is_hit(hit_point_to_light, &map->obj[obj_index], &shadow_info);
+		obj_index++;
 	}
+	if (shadow_info.distance < vec_length(vec_minus(map->light[light_index].pos, hit_point_to_light.orig))  && shadow_info.distance > -EPSILON)
+	{
+		// printf("%f\n", shadow_info.distance);
+		return (TRUE);
+	}
+	return (FALSE);
 }
 
 /*
@@ -103,7 +97,7 @@ Ip = ka * ia + sigma(from 0 to light_cnt)
 				(kd * (Lm dotprod N) * im,d + ks * (Rm dotprod V) ^ alpha * im,s)
 Rm = 2 * (Lm dotprod N) * N - Lm
 */
-t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v, int *flag)
+t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v)
 {
 	t_phong		param;
 	t_color		point_color;
@@ -113,6 +107,7 @@ t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v, int *flag)
 	t_vec		light_direction;
 	t_vec		reflect_direction;
 	int			light_index;
+	int			shadow_flag;
 
 	param.ka = map->ambi_light.bright;
 	param.ks = 0.5;
@@ -123,8 +118,8 @@ t_color	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v, int *flag)
 	light_index = 0;
 	while (light_index < map->light_cnt)
 	{
-		set_shadow_flag(map, info, flag);
-		if (flag[light_index] == 0)
+		shadow_flag = set_shadow_flag(map, info, light_index);
+		if (shadow_flag == FALSE)
 		{
 			light_direction = vec_normalize(vec_minus(map->light[light_index].pos, info->hit_point));
 			param.kd = fmax(vec_dotprod(info->norm_vec, light_direction), 0);
@@ -148,11 +143,11 @@ void	test_draw(t_map_info *map)
 	int			j;
 	int			obj_index;
 	t_ray		ray;
-	int			*shadow_flag;
+	/* int			*shadow_flag; */
 	t_color		color;
 
 	cam = map->cam;
-	shadow_flag = ft_malloc(sizeof(int) * map->light_cnt);
+	/* shadow_flag = ft_malloc(sizeof(int) * map->light_cnt); */
 	ft_memset(&info, 0, sizeof(t_hit_info));
 	fprintf(stderr, "P3\n%d %d\n255\n", SCRN_WIDTH, SCRN_HEIGHT);
 	i = SCRN_HEIGHT;
@@ -179,8 +174,8 @@ void	test_draw(t_map_info *map)
 			// }
 			if (info.distance < DBL_MAX)
 			{
-				ft_memset(shadow_flag, 0, sizeof(int) * map->light_cnt);
-				color = phong_reflection(map, &info, cam->orient_neg, shadow_flag);
+				/* ft_memset(shadow_flag, 0, sizeof(int) * map->light_cnt); */
+				color = phong_reflection(map, &info, cam->orient_neg);
 				if (color.r > 1)
 					color.r = 1;
 				if (color.g > 1)
