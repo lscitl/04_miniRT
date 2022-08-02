@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/01 13:22:46 by chanhpar         ###   ########.fr        #
+#    Updated: 2022/08/02 20:01:38 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ SRC				:=	minirt_main.c \
 					minirt_math_vec_utils_2.c \
 					minirt_math_vec_utils_3.c \
 					minirt_util_1.c \
-					is_hit.c \
+					minirt_is_hit.c \
 					print_map_for_debugging.c
 
 SRCS			:=	$(addprefix $(SRCS_DIR)/, $(SRC))

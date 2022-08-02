@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_hit_2.c                                         :+:      :+:    :+:   */
+/*   is_hit.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/01 22:41:11 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 20:01:59 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,13 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_within_obj(t_vec intersect, t_obj_info *obj);
-/* static int	is_hit_background(t_ray ray, t_obj_info *obj, t_hit_info *info); */
 
-static int	update_hit_info(t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
-static t_vec	get_normal_vector(t_vec point, t_obj_info *obj);
+static int	update_hit_info(t_vec dir, t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root);
+static t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj);
 static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj);
 
 int			solve_quadratic(double coeff[3], double root[2]);
 int			solve_linear(double coeff[3], double root[2]);
-
-double		vec_dotprod(t_vec vec1, t_vec vec2);
-t_vec		vec_crossprod(t_vec vec1, t_vec vec2);
-double		vec_cos(t_vec vec1, t_vec vec2);
-double		vec_sin(t_vec vec1, t_vec vec2);
-t_vec		vec_normalize(t_vec vec);
-double		vec_length(t_vec vec);
-t_vec		vec_plus(t_vec vec1, t_vec vec2);
-t_vec		vec_minus(t_vec vec1, t_vec vec2);
-t_vec		vec_scale(t_vec vec1, double scale);
 
 int			is_zero(double value);
 
@@ -86,7 +75,7 @@ static int	is_hit_plane(t_ray ray, t_obj_info *obj, t_hit_info *info)
 		root[0] = 0;
 	if (flag >= 0 && root[0] <= info->distance && root[0] >= 0)
 	{
-		return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
+		return (update_hit_info(ray.direction, info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
 	}
 	else
 		return (-1);
@@ -103,15 +92,13 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	flag = solve_quadratic(coeff, root);
 	if (flag >= 0) // ray hit the sphere at two points
 	{
-		// if (root[0] < 0 || root[1] < 0)
-		// 	return (-1);
 		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
-			return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
+			return (update_hit_info(ray.direction, info, obj, vec_ray_at_distance(ray, root[0]), root[0]));
 		}
 		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
-			return (update_hit_info(info, obj, vec_ray_at_distance(ray, root[1]), root[1]));
+			return (update_hit_info(ray.direction, info, obj, vec_ray_at_distance(ray, root[1]), root[1]));
 		}
 	}
 	return (-1); // does not update hit_info
@@ -130,20 +117,20 @@ static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	flag = solve_quadratic(coeff, root);
 	if (flag >= 0) // ray hit the cylinder at two points
 	{
-		if (root[0] <= info->distance && root[0] >= EPSILON) // check if root[0] is valid
+		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
 			intersect = vec_ray_at_distance(ray, root[0]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[0]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[0]));
 			}
 		}
-		if (flag > 0 && root[1] <= info->distance && root[1] >= EPSILON) // check if root[1] is valid
+		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
 			intersect = vec_ray_at_distance(ray, root[1]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[1]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[1]));
 			}
 		}
 	}
@@ -156,7 +143,8 @@ static int	is_hit_circle(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	t_vec		dist;
 	int			flag;
 
-	temp.distance = DBL_MAX;
+	temp = *info;
+	//temp.distance = info->distance;
 	flag = is_hit_plane(ray, obj, &temp);
 	if (flag < 0)
 		return (-1);
@@ -183,54 +171,59 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 	flag = solve_quadratic(coeff, root);
 	if (flag > 0) // ray hit the cone at two points
 	{
-		if (root[0] <= info->distance && root[0] >= EPSILON) // check if root[0] is valid
+		if (root[0] <= info->distance && root[0] >= 0) // check if root[0] is valid
 		{
 			intersect = vec_ray_at_distance(ray, root[0]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[0]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[0]));
 			}
 		}
-		if (flag > 0 && root[1] <= info->distance && root[1] >= EPSILON) // check if root[1] is valid
+		if (flag > 0 && root[1] <= info->distance && root[1] >= 0) // check if root[1] is valid
 		{
 			intersect = vec_ray_at_distance(ray, root[1]);
 			if (is_within_obj(intersect, obj))
 			{
-				return (update_hit_info(info, obj, intersect, root[1]));
+				return (update_hit_info(ray.direction, info, obj, intersect, root[1]));
 			}
 		}
 	}
 	return (-1);
 }
 
-static int	update_hit_info(t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root)
+static int	update_hit_info(t_vec dir, t_hit_info *info, t_obj_info *obj, t_vec hit_point, double root)
 {
 	info->distance = root;
 	info->hit_point = hit_point;
-	if (hit)
-	info->norm_vec = get_normal_vector(hit_point, obj, info->direction);
+	info->norm_vec = get_normal_vector(dir, hit_point, obj);
 	info->color = obj->color;
+	// printf("%f, %f, %f\n", info->color.r, info->color.g, info->color.b);
 	return (0);
 }
 
-static t_vec	get_normal_vector(t_vec point, t_obj_info *obj, int direction)
+static t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj)
 {
+	t_vec	n;
+
 	if (obj->type == SPHERE)
 	{
-		return (vec_normalize(vec_scale(vec_minus(point, obj->pos), direction)));
+		n = (vec_normalize(vec_minus(point, obj->pos)));
 	}
 	else if (obj->type == CYLINDER)
 	{
-		return (vec_normalize(vec_scale(vec_crossprod(obj->orient, vec_crossprod(vec_minus(point, obj->pos), obj->orient)), direction)));
+		n = (vec_normalize(vec_crossprod(obj->orient, vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
 	}
 	else if (obj->type == CONE)
 	{
-		return (vec_normalize(vec_scale(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), point), vec_crossprod(vec_minus(point, obj->pos), obj->orient)), direction)));
+		n = (vec_normalize(vec_crossprod(vec_minus(vec_plus(obj->pos, vec_scale(obj->orient, obj->height)), point), vec_crossprod(vec_minus(point, obj->pos), obj->orient))));
 	}
 	else
 	{
-		return (obj->orient);
+		n = (obj->orient);
 	}
+	if (vec_dotprod(n, dir) > 0)
+		return (vec_scale(n, (double)-1));
+	return (n);
 }
 
 static int	is_within_obj(t_vec intersect, t_obj_info *obj)
@@ -238,7 +231,7 @@ static int	is_within_obj(t_vec intersect, t_obj_info *obj)
 	double	projection;
 
 	projection = vec_dotprod(vec_minus(intersect, obj->pos), obj->orient);
-	return (projection >= 0 && projection <= obj->height);
+	return (projection >= -EPSILON && projection <= obj->height);
 }
 
 static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
@@ -248,6 +241,7 @@ static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
 	t_vec	h;
 	double	v_dot_h;
 	double	w_dot_h;
+	double	w_dot_v;
 	// double	cos_square_theta;
 
 	h = obj->orient;
@@ -256,7 +250,7 @@ static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
 	if (obj->type == SPHERE)
 	{
 		coeff[0] = vec_dotprod(ray.direction, ray.direction);
-		coeff[1] = 2.0 * vec_dotprod(ray.direction, w);
+		coeff[1] = (double)2 * vec_dotprod(ray.direction, w);
 		coeff[2] = vec_dotprod(w, w) - (obj->r_sqare);
 	}
 	else if (obj->type == CYLINDER)
@@ -271,14 +265,18 @@ static void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
 	{
 		v_dot_h = vec_dotprod(v, h);
 		w_dot_h = vec_dotprod(w, h);
-		cos_square_theta = (obj->height * obj->height);
-		cos_square_theta /= (obj->height * obj->height + obj->radius * obj->radius);
-		coeff[0] = vec_dotprod(v, h) * vec_dotprod(v, h) - cos_square_theta;
-		coeff[1] = 2 * (vec_dotprod(v, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, v));
-		coeff[2] = vec_dotprod(w, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, w);
-		// coeff[0] = 1.0 - (1.0 + obj->rsq_div_hsq) * pow(v_dot_h, 2);
-		// coeff[1] = 2.0 * (vec_dotprod(w, v) + obj->rsq_div_h * v_dot_h - (1.0 + obj->rsq_div_hsq) * w_dot_h * v_dot_h);
-		// coeff[2] = vec_dotprod(w, w) - (1.0 + obj->rsq_div_hsq) * pow(w_dot_h, 2) - obj->r_sqare + 2.0 * obj->rsq_div_h * w_dot_h;
+		w_dot_v = vec_dotprod(w, v);
+		// cos_square_theta = (obj->height * obj->height);
+		// cos_square_theta /= (obj->height * obj->height + obj->radius * obj->radius);
+		// coeff[0] = vec_dotprod(v, h) * vec_dotprod(v, h) - cos_square_theta;
+		// coeff[1] = 2 * (vec_dotprod(v, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, v));
+		// coeff[2] = vec_dotprod(w, h) * vec_dotprod(w, h) - cos_square_theta * vec_dotprod(w, w);
+		coeff[0] = 1.0 - (1.0 + obj->rsq_div_hsq) * pow(v_dot_h, 2);
+		coeff[1] = 2.0 * (vec_dotprod(w, v) + obj->rsq_div_h * v_dot_h - (1.0 + obj->rsq_div_hsq) * w_dot_h * v_dot_h);
+		coeff[2] = vec_dotprod(w, w) - (1.0 + obj->rsq_div_hsq) * pow(w_dot_h, 2) - obj->r_sqare + 2.0 * obj->rsq_div_h * w_dot_h;
+		// coeff[0] = 1.0 - (1.0 + obj->rsq_div_hsq) * v_dot_h * v_dot_h;
+		// coeff[1] = 2.0 * (w_dot_v - (1.0 + obj->rsq_div_hsq) * v_dot_h * w_dot_h);
+		// coeff[2] = vec_dotprod(w, w) - (1.0 + obj->rsq_div_hsq) * w_dot_h * w_dot_h;
 	}
 	else
 	{
