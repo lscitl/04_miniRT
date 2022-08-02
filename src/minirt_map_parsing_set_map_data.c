@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/26 19:14:27 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 14:18:08 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,7 @@ static int	set_params(t_map *map, char **args)
 	else if (!ft_strncmp(args[0], "pl", -1) || !ft_strncmp(args[0], "sp", -1) \
 			|| !ft_strncmp(args[0], "cy", -1) || !ft_strncmp(args[0], "co", -1))
 		return (set_obj(map, args));
+	else if (ft_strncmp(*args, "#", 1) == 0)
+		return (EXIT_SUCCESS);
 	return (EXIT_FAILURE);
 }
