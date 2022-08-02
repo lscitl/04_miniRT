@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/13 15:50:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 15:19:30 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/02 15:32:06 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	set_shadow_flag(t_map_info *map, t_hit_info *info, int light_index)
 		is_hit(hit_point_to_light, &map->obj[obj_index], &shadow_info);
 		obj_index++;
 	}
-	if (shadow_info.distance < vec_length(vec_minus(map->light[light_index].pos, hit_point_to_light.orig))  && shadow_info.distance > -EPSILON)
+	if (shadow_info.distance < (EPSILON + vec_length(vec_minus(map->light[light_index].pos, hit_point_to_light.orig)))  && shadow_info.distance > -EPSILON)
 	{
 		// printf("%f\n", shadow_info.distance);
 		return (TRUE);
