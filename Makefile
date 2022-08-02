@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/02 21:48:00 by seseo            ###   ########.fr        #
+#    Updated: 2022/08/02 22:49:57 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,10 @@ OBJS_DIR		:=	obj
 SRC				:=	minirt_main.c \
 					minirt_convert_data.c \
 					minirt_draw_img.c \
+					minirt_is_hit_utils.c \
+					minirt_is_hit.c \
+					minirt_main_initialize.c \
+					minirt_main_mlx_hook.c \
 					minirt_map_parsing_main.c \
 					minirt_map_parsing_set_light_and_cam.c \
 					minirt_map_parsing_set_map_data.c \
@@ -31,8 +35,6 @@ SRC				:=	minirt_main.c \
 					minirt_phong_and_shadow.c \
 					minirt_utils_color.c \
 					minirt_utils.c \
-					minirt_is_hit.c \
-					minirt_is_hit_utils.c \
 					print_map_for_debugging.c
 
 SRCS			:=	$(addprefix $(SRCS_DIR)/, $(SRC))

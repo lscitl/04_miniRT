@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt_util.c                                      :+:      :+:    :+:   */
+/*   minirt_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 19:58:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 21:11:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 22:10:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	free_map(t_map *map)
 	ft_lst_node_clear((t_list *)map->light);
 	ft_lst_node_clear((t_list *)map->camera);
 	ft_lst_node_clear((t_list *)map->obj);
+	free(map);
 }
 
 void	free_map_info(t_map_info *map)

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/28 12:23:14 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/02 22:44:44 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_map	*map_parsing(char *file_path)
 		ft_putendl_fd("minirt: Map Error", 2);
 		exit(EXIT_FAILURE);
 	}
-	print_map(map);
+	free_strs(map_args);
 	return (map);
 }
 

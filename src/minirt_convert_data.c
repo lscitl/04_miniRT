@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 21:21:33 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 22:50:42 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,25 +46,27 @@ void	set_cam_info(t_map_info *map, t_camera *cam)
 {
 	t_cam_info	*c;
 	t_vec		s_center;
+	int			i;
 
 	map->cam_cnt = lst_cnt((t_list *)cam);
-	map->cam = ft_malloc(sizeof(t_cam_info) * map->cam_cnt);
-	c = map->cam;
+	c = ft_malloc(sizeof(t_cam_info) * map->cam_cnt);
+	i = 0;
 	while (cam)
 	{
-		c->pos = vec_make(cam->pos);
-		c->orient = vec_make(cam->orient);
-		c->orient_neg = vec_scale(c->orient, -1);
-		c->angle = cam->angle / 180 * M_PI;
-		c->focal_len = SCRN_WIDTH / (2 * atan(c->angle / 2));
+		c[i].pos = vec_make(cam->pos);
+		c[i].orient = vec_make(cam->orient);
+		c[i].orient_neg = vec_scale(c[i].orient, -1);
+		c[i].angle = cam->angle / 180 * M_PI;
+		c[i].focal_len = SCRN_WIDTH / (2 * atan(c[i].angle / 2));
 		set_cam_axis(c);
-		s_center = vec_scale(c->orient, c->focal_len);
-		s_center = vec_plus(s_center, vec_scale(c->x_vec, SCRN_WIDTH / 2 * -1));
-		c->screen = \
-			vec_plus(s_center, vec_scale(c->y_vec, SCRN_HEIGHT / 2 * -1));
-		c++;
+		s_center = vec_scale(c[i].orient, c[i].focal_len);
+		s_center = vec_plus(s_center, vec_scale(c[i].x_vec, SCRN_WIDTH / 2 * -1));
+		c[i].screen = \
+			vec_plus(s_center, vec_scale(c[i].y_vec, SCRN_HEIGHT / 2 * -1));
+		i++;
 		cam = cam->next;
 	}
+	map->cam = c;
 }
 
 static void	set_cam_axis(t_cam_info *cam)
@@ -97,7 +99,6 @@ void	set_obj_info(t_map_info *map, t_obj *obj)
 	i = 0;
 	while (obj)
 	{
-		// printf("%d\n", obj->type);
 		map->obj[i].type = obj->type;
 		map->obj[i].pos = vec_make(obj->pos);
 		map->obj[i].orient = vec_make(obj->orient);
@@ -132,11 +133,7 @@ static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
 										/ pow(obj_info[0].height, 2);
 		obj_info[0].rsq_div_h = pow(obj_info[0].radius, 2) \
 										/ obj_info[0].height;
-		// obj_info[0].cos_square_theta = (obj_info->height * obj_info->height);
-		// obj_info[0].cos_square_theta /= (obj_info->height * obj_info->height + obj_info->r_sqare);
 		obj_info[1] = obj_info[0];
-		// obj_info[1].pos = vec_plus(obj_info[0].pos, \
-		// 					vec_scale(obj_info[0].orient, obj_info[0].height));
 		obj_info[1].type = CIRCLE;
 		return (1);
 	}

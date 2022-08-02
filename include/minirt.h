@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 21:52:00 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 22:49:01 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,20 @@ typedef struct s_vars
 	t_data		img;
 }	t_vars;
 
+// minirt_convert_data.c
+void	set_ambi_light_and_light_info(t_vars *vars, t_map *map);
+void	set_cam_info(t_map_info *map, t_camera *cam);
+void	set_obj_info(t_map_info *map, t_obj *obj);
+
 // minirt_draw_img.c
 void	draw_image(t_vars *vars, t_map_info *map, t_cam_info *cam);
+
+// minirt_main_initialize.c
+void	init_var_and_set_map_data(t_vars *vars, char *arg);
+
+// minirt_main_mlx_hook.c
+int		key_hook(int keycode, t_vars *vars);
+int		exit_hook(t_vars *vars);
 
 // minirt_utils_color.c
 int		get_color(int color, int target_color);
@@ -146,11 +158,6 @@ t_color	add_color(t_color c1, t_color c2, t_color c3);
 void	free_map_info(t_map_info *map);
 void	free_map(t_map *map);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
-
-// minirt_convert_data.c
-void	set_ambi_light_and_light_info(t_vars *vars, t_map *map);
-void	set_cam_info(t_map_info *map, t_camera *cam);
-void	set_obj_info(t_map_info *map, t_obj *obj);
 
 void	print_map_info(t_map_info *map);
 

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 14:18:08 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/02 22:43:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	set_map_data(t_map *map, char **map_args)
 		if (set_params(map, args))
 			return (EXIT_FAILURE);
 		free_strs(args);
-		free(map_args[i]);
 		i++;
 	}
 	return (EXIT_SUCCESS);
