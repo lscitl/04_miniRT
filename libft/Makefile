@@ -6,17 +6,12 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 13:53:10 by seseo             #+#    #+#              #
-#    Updated: 2022/07/30 23:08:53 by seseo            ###   ########.fr        #
+#    Updated: 2022/08/02 16:03:39 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCM_DIR 		:=	src/mandatory
-SRCB_DIR 		:=	src/bonus
-
+SRCS_DIR 		:=	src
 OBJS_DIR		:=	obj
-
-SRCSM			:=	$(addprefix $(SRCM_DIR)/, $(SRCM))
-SRCSB			:=	$(addprefix $(SRCB_DIR)/, $(SRCB))
 
 SRCM			:=	ft_isalpha.c \
 					ft_isdigit.c \
@@ -74,17 +69,8 @@ SRCB			:=	ft_lstnew.c \
 					split_wildcard_utils_bonus.c \
 					free_strs_bonus.c
 
-SRCS			:=	$(SRCM)
-
-OBJM			:=	$(SRCM:%.c=$(OBJS_DIR)/%.o)
-OBJB			:=	$(SRCB:%.c=$(OBJS_DIR)/%.o)
-
-OBJS			:=	$(OBJM)
-
-ifeq ($(BONUS), true)
-	SRCS		+=	$(SRCSB)
-	OBJS		+=	$(OBJB)
-endif
+SRCS			:=	$(SRCM) $(SRCB)
+OBJS			:=	$(SRCS:%.c=$(OBJS_DIR)/%.o)
 
 NAME			:=	libft.a
 LIBC			:=	ar -rcs
@@ -93,15 +79,9 @@ RM				:=	rm -rf
 CFLAGS			:=	-Wall -Wextra -Werror -g
 INCLUDE			:=	-Iinclude
 
-ifeq ($(BONUS), true)
-$(OBJS_DIR)/%.o	:	$(SRCB_DIR)/%.c
+$(OBJS_DIR)/%.o	:	$(SRCS_DIR)/%.c
 					@mkdir -p $(@D)
 					$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
-else
-$(OBJS_DIR)/%.o	:	$(SRCM_DIR)/%.c
-					@mkdir -p $(@D)
-					$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
-endif
 
 $(NAME)			:	$(OBJS)
 					@$(LIBC) $(NAME) $(OBJS)
@@ -109,7 +89,7 @@ $(NAME)			:	$(OBJS)
 all				:	$(NAME)
 
 clean			:
-					@$(RM) $(OBJM) $(OBJB)
+					@$(RM) $(OBJS)
 
 fclean			:	clean
 					$(RM) $(NAME)
@@ -117,7 +97,6 @@ fclean			:	clean
 re				:	fclean
 					@$(MAKE) bonus
 
-bonus			:	$(NAME)
-					@$(MAKE) BONUS=true
+bonus			:	all
 
 .PHONY			:	all clean fclean re bonus
