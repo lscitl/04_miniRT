@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:09:43 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 01:13:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 16:36:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void		set_ray(t_cam_info *cam, t_ray *ray, int x, int y);
 static void		get_hit_info(t_map_info *map, t_hit_info *info, t_ray ray);
 static void		draw_horizon_line(t_vars *vars, t_hit_info *info, int x, int y);
-static t_color	adjust_color(t_hit_info *info, t_color color);
+static t_color	calculate_color(t_phong *param, t_hit_info *info);
 
 void	draw_image(t_vars *vars, t_map_info *map, t_cam_info *cam)
 {
@@ -67,43 +67,36 @@ static void	get_hit_info(t_map_info *map, t_hit_info *info, t_ray ray)
 static void	draw_horizon_line(t_vars *vars, t_hit_info *info, int x, int y)
 {
 	t_color	color;
+	t_phong	param;
 	int		y_mlx;
 
 	y_mlx = SCRN_HEIGHT - y - 1;
 	if (info->distance < DBL_MAX)
 	{
-		color = phong_reflection(vars->map, info, vars->map->cam->orient_neg);
-		color = adjust_color(info, color);
+		param = phong_reflection(vars->map, info, vars->map->cam->orient_neg);
+		color = calculate_color(&param, info);
 		my_mlx_pixel_put(&vars->img, x, y_mlx, convert_color(color));
 	}
 	else
 		my_mlx_pixel_put(&vars->img, x, y_mlx, 0);
 }
 
-static t_color	adjust_color(t_hit_info *info, t_color color)
+static t_color	calculate_color(t_phong *param, t_hit_info *info)
 {
+	t_color	color;
+
+	color.r = param->point_color.r * info->color.r;
+	color.g = param->point_color.g * info->color.g;
+	color.b = param->point_color.b * info->color.b;
+	color = add_color(color, param->specular);
 	if (color.r > 1)
 		color.r = 1;
 	if (color.g > 1)
 		color.g = 1;
 	if (color.b > 1)
 		color.b = 1;
-	// if (color.r == 1 && color.g == 1 && color.b == 1)
-	// {
-	// 	color.r = 255;
-	// 	color.g = 255;
-	// 	color.b = 255;
-	// 	return (color);
-	// }
-	if (color.r > .93 && color.g > .93 && color.b > .93)
-	{
-		color.r *= 255;
-		color.g *= 255;
-		color.b *= 255;
-		return (color);
-	}
-	color.r = color.r * info->color.r * 255;
-	color.g = color.g * info->color.g * 255;
-	color.b = color.b * info->color.b * 255;
+	color.r = color.r * 255;
+	color.g = color.g * 255;
+	color.b = color.b * 255;
 	return (color);
 }

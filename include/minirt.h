@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 23:28:23 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 14:54:05 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,8 @@ int		get_color(int color, int target_color);
 int		convert_color(t_color color);
 t_color	set_color(double red, double green, double blue);
 t_color	apply_bright(t_color light, double bright);
-t_color	add_color(t_color c1, t_color c2, t_color c3);
+t_color	add_color(t_color c1, t_color c2);
+// t_color	add_color(t_color c1, t_color c2, t_color c3);
 
 // minirt_utils.c
 void	free_map_info(t_map_info *map);

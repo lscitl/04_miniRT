@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 21:10:07 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 21:43:33 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 14:53:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,25 @@ t_color	set_color(double red, double green, double blue)
 	return (color);
 }
 
-t_color	add_color(t_color c1, t_color c2, t_color c3)
+t_color	add_color(t_color c1, t_color c2)
 {
 	t_color	color;
 
-	color.r = c1.r + c2.r + c3.r;
-	color.g = c1.g + c2.g + c3.g;
-	color.b = c1.b + c2.b + c3.b;
+	color.r = c1.r + c2.r;
+	color.g = c1.g + c2.g;
+	color.b = c1.b + c2.b;
 	return (color);
 }
+
+// t_color	add_color(t_color c1, t_color c2, t_color c3)
+// {
+// 	t_color	color;
+
+// 	color.r = c1.r + c2.r + c3.r;
+// 	color.g = c1.g + c2.g + c3.g;
+// 	color.b = c1.b + c2.b + c3.b;
+// 	return (color);
+// }
 
 t_color	apply_bright(t_color light, double bright)
 {
