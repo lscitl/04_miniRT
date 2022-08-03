@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/03 16:37:58 by seseo            ###   ########.fr        #
+#    Updated: 2022/08/03 16:45:41 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ OBJS_DIR		:=	obj
 
 SRC				:=	minirt_main.c \
 					minirt_is_hit_phong_and_shadow.c \
+					minirt_is_hit_calc_coeff.c \
 					minirt_is_hit_utils.c \
 					minirt_is_hit.c \
 					minirt_main_convert_data.c \
