@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 21:10:07 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 14:53:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 20:29:41 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,16 @@ t_color	set_color(double red, double green, double blue)
 	color.r = red;
 	color.g = green;
 	color.b = blue;
+	return (color);
+}
+
+t_color	set_color2(int color_int)
+{
+	t_color	color;
+
+	color.r = (color_int >> 16) & 0xFF;
+	color.g = (color_int >> 8) & 0xFF;
+	color.b = color_int & 0xFF;
 	return (color);
 }
 

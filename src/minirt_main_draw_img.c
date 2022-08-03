@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt_draw_img.c                                  :+:      :+:    :+:   */
+/*   minirt_main_draw_img.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:09:43 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 16:36:37 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 23:20:35 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,28 @@ static void		get_hit_info(t_map_info *map, t_hit_info *info, t_ray ray);
 static void		draw_horizon_line(t_vars *vars, t_hit_info *info, int x, int y);
 static t_color	calculate_color(t_phong *param, t_hit_info *info);
 
+void	open_texture_img(t_data *img)
+{
+	void	*mlx;
+	int		x_size;
+	int		y_size;
+
+	mlx = mlx_init();
+	img->img = mlx_xpm_file_to_image(mlx, "texture/texture.xpm", &x_size, &y_size);
+	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length, &img->endian);
+}
+
 void	draw_image(t_vars *vars, t_map_info *map, t_cam_info *cam)
 {
+	// t_data		texture;
 	t_hit_info	info;
 	t_ray		ray;
 	int			x;
 	int			y;
+	// int			tex_cord[2];
 
 	ft_memset(&info, 0, sizeof(t_hit_info));
+	// open_texture_img(&texture);
 	y = 0;
 	while (y < SCRN_HEIGHT)
 	{
@@ -33,6 +47,8 @@ void	draw_image(t_vars *vars, t_map_info *map, t_cam_info *cam)
 		{
 			set_ray(cam, &ray, x, y);
 			get_hit_info(map, &info, ray);
+			// get_tex_cord(info, )
+			// info.color = set_color2(get_mlx_pixel_color(texture, x, y));
 			draw_horizon_line(vars, &info, x, y);
 			x++;
 		}
@@ -56,7 +72,7 @@ static void	set_ray(t_cam_info *cam, t_ray *ray, int x, int y)
 
 static void	get_hit_info(t_map_info *map, t_hit_info *info, t_ray ray)
 {
-	int	obj_index;
+	int		obj_index;
 
 	info->distance = DBL_MAX;
 	obj_index = 0;

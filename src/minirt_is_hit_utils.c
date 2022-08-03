@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_is_hit_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:03:47 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/03 22:18:34 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/03 23:45:54 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,12 @@ int	update_hit_info(t_ray ray, t_hit_info *info, t_obj_info *obj, double root)
 	info->distance = root;
 	info->hit_point = hit_point;
 	info->norm_vec = get_normal_vector(ray.direction, hit_point, obj);
-	info->color = get_point_color(obj, hit_point);
+	if (obj->surface != DEFAULT)
+		info->color = get_point_color(obj, hit_point);
+	else
+		info->color = obj->color;
+	info->obj_orient = obj->orient;
+	info->obj_pos = obj->pos;
 	return (0);
 }
 
@@ -79,7 +84,7 @@ static t_color	get_point_color(t_obj_info *obj, t_vec hit_point)
 	/* color = get_color_from_texture(obj, uv); */
 	/* color = add_color(apply_bright(set_color(0.8, 0.8, 0.1), uv[0]), \ */
 	/*         apply_bright(set_color(0.1, 0.4, 0.9), uv[1]));            */
-	flag = (int)(floor(2 * uv[0]) + floor(2 * uv[1]));
+	flag = (int)(floor(uv[0]) + floor(uv[1]));
 	if (flag % 2)
 		color = set_color(0, 0, 0);
 	else
@@ -91,7 +96,7 @@ static t_color	get_point_color(t_obj_info *obj, t_vec hit_point)
 // plane -> UV coordinate
 // sphere -> UV mapping
 // cylinder -> theta, h
-// cone -> r (distance from top_point), theta on the 
+// cone -> r (distance from top_point), theta on the
 static void	get_uv_mapping(t_obj_info *obj, t_vec hit_point, double uv[2])
 {
 	static double	x_axis[3] = {1, 0, 0};
@@ -120,8 +125,8 @@ static void	get_uv_mapping(t_obj_info *obj, t_vec hit_point, double uv[2])
 	else if (obj->type == SPHERE)
 	{
 		d = vec_normalize(vec_minus(obj->pos, hit_point));
-		uv[0] = 0.5 + atan2(d.x, d.z) / (2.0 * M_PI);
-		uv[1] = 0.5 + asin(d.y) / M_PI;
+		uv[0] = obj->radius * 2 * (0.5 + atan2(d.x, d.z) / (2.0 * M_PI));
+		uv[1] = obj->radius * 2 * (0.5 + asin(d.y) / M_PI);
 	}
 	else if (obj->type == CYLINDER)
 	{
@@ -134,8 +139,8 @@ static void	get_uv_mapping(t_obj_info *obj, t_vec hit_point, double uv[2])
 			v_unit = vec_normalize(vec_crossprod(x_vec, obj->orient));
 			u_unit = vec_normalize(vec_crossprod(obj->orient, v_unit));
 		}
-		uv[0] = acos(vec_dotprod(vec_normalize(vec_minus(vec_minus(hit_point, obj->pos), vec_scale(obj->orient, vec_dotprod((vec_minus(hit_point, obj->pos)), obj->orient)))), u_unit)) / M_PI;
-		uv[1] = vec_dotprod(obj->orient, vec_minus(hit_point, obj->pos)) / obj->height;
+		uv[0] = obj->radius * 2.0 * acos(vec_dotprod(vec_normalize(vec_minus(vec_minus(hit_point, obj->pos), vec_scale(obj->orient, vec_dotprod((vec_minus(hit_point, obj->pos)), obj->orient)))), u_unit)) / M_PI;
+		uv[1] = vec_dotprod(obj->orient, vec_minus(hit_point, obj->pos));
 	}
 	else if (obj->type == CONE)
 	{
@@ -148,8 +153,8 @@ static void	get_uv_mapping(t_obj_info *obj, t_vec hit_point, double uv[2])
 			v_unit = vec_normalize(vec_crossprod(x_vec, obj->orient));
 			u_unit = vec_normalize(vec_crossprod(obj->orient, v_unit));
 		}
-		uv[0] = acos(vec_dotprod(vec_normalize(vec_minus(vec_minus(hit_point, obj->pos), vec_scale(obj->orient, vec_dotprod((vec_minus(hit_point, obj->pos)), obj->orient)))), u_unit)) / M_PI;
-		uv[1] = 1.0 - vec_dotprod(vec_minus(hit_point, obj->pos), obj->orient) / obj->height;
+		uv[0] = obj->radius * 2.0 * acos(vec_dotprod(vec_normalize(vec_minus(vec_minus(hit_point, obj->pos), vec_scale(obj->orient, vec_dotprod((vec_minus(hit_point, obj->pos)), obj->orient)))), u_unit)) / M_PI;
+		uv[1] = 1.0 - vec_dotprod(vec_minus(hit_point, obj->pos), obj->orient);
 	}
 	else
 	{

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 16:37:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 23:10:10 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void	set_obj_info(t_map_info *map, t_obj *obj)
 		map->obj[i].radius = obj->diameter / 2;
 		map->obj[i].r_sqare = map->obj[i].radius * map->obj[i].radius;
 		map->obj[i].height = obj->height;
+		map->obj[i].surface = CHECKER_BOARD;
 		i += set_cylinder_and_cone_info(&map->obj[i]);
 		i++;
 		obj = obj->next;

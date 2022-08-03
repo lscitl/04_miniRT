@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 16:28:39 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 21:13:41 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ typedef struct s_hit_info
 	t_vec	norm_vec;
 	double	distance;
 	int		direction;
+	t_vec	obj_pos;
+	t_vec	obj_orient;
+	t_data	*texture;
+	int		surface;
 }	t_hit_info;
 
 int		is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info);

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 14:54:05 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/03 23:14:26 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,13 @@
 // # define C_GREEN			0xFF00
 // # define C_BLUE				0xFF
 
+enum	e_surface
+{
+	DEFAULT,
+	CHECKER_BOARD,
+	TEXTURE
+};
+
 typedef struct s_phong
 {
 	double	ka;
@@ -67,14 +74,17 @@ typedef struct s_phong
 typedef struct s_obj_info
 {
 	int		type;
+	int		surface;
 	t_vec	pos;
 	t_vec	orient;
 	t_color	color;
+	t_phong	param;
+	// t_data	*texture;
 	double	radius;
 	double	r_sqare;
 	double	rsq_div_hsq;
 	double	rsq_div_h;
-	double	cos_square_theta;
+	double	c_board_scale;
 	double	height;
 	double	width;
 }	t_obj_info;
@@ -154,12 +164,13 @@ int		convert_color(t_color color);
 t_color	set_color(double red, double green, double blue);
 t_color	apply_bright(t_color light, double bright);
 t_color	add_color(t_color c1, t_color c2);
-// t_color	add_color(t_color c1, t_color c2, t_color c3);
+t_color	set_color2(int color);
 
 // minirt_utils.c
 void	free_map_info(t_map_info *map);
 void	free_map(t_map *map);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+int		get_mlx_pixel_color(t_data *data, int x, int y);
 
 void	print_map_info(t_map_info *map);
 
