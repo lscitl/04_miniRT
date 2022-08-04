@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/02 22:23:54 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/04 19:52:07 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,30 +19,19 @@ static int	is_hit_sphere(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cylinder(t_ray ray, t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info);
 
+static int (*const	g_func_array[5])(t_ray, t_obj_info *, t_hit_info *) = {
+	is_hit_sphere, \
+	is_hit_cylinder, \
+	is_hit_cone, \
+	is_hit_plane_circle, \
+	is_hit_plane_circle \
+};
+
 // if hit_info is updated, return 0. no hit -> return -1.
 // set hit information in info
 int	is_hit(t_ray ray, t_obj_info *obj, t_hit_info *info)
 {
-	if (obj->type == SPHERE)
-	{
-		return (is_hit_sphere(ray, obj, info));
-	}
-	else if (obj->type == CYLINDER)
-	{
-		return (is_hit_cylinder(ray, obj, info));
-	}
-	else if (obj->type == CONE)
-	{
-		return (is_hit_cone(ray, obj, info));
-	}
-	else if (obj->type == PLANE || obj->type == CIRCLE)
-	{
-		return (is_hit_plane_circle(ray, obj, info));
-	}
-	else
-	{
-		return (-1);
-	}
+	return (g_func_array[obj->type](ray, obj, info));
 }
 
 // (orig + t * dir - obj->pos) * orient == 0;
@@ -136,7 +125,7 @@ static int	is_hit_cone(t_ray ray, t_obj_info *obj, t_hit_info *info)
 
 	calc_coeff(coeff, ray, obj);
 	if (is_zero(coeff[0]))
-		return (-1); // XXX
+		return (-1);
 	flag = solve_quadratic(coeff, root);
 	if (flag > 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 20:24:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/27 15:57:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/04 15:05:11 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ enum e_color
 
 enum e_obj_type
 {
-	NONE,
-	PLANE,
 	SPHERE,
 	CYLINDER,
 	CONE,
+	PLANE,
 	CIRCLE,
-	SQUARE
+	SQUARE,
+	NONE
 };
 
 enum e_lst_type
