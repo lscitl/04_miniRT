@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 21:10:07 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 20:29:41 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 00:22:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	get_color(int color, int target_color)
 	return ((color >> (target_color * 8)) & 0xFF);
 }
 
-int	convert_color(t_color color)
+int	convert_color_to_int(t_color color)
 {
 	int	red;
 	int	green;
@@ -39,13 +39,13 @@ t_color	set_color(double red, double green, double blue)
 	return (color);
 }
 
-t_color	set_color2(int color_int)
+t_color	set_color_from_int(int color_int)
 {
 	t_color	color;
 
-	color.r = (color_int >> 16) & 0xFF;
-	color.g = (color_int >> 8) & 0xFF;
-	color.b = color_int & 0xFF;
+	color.r = ((color_int >> 16) & 0xFF) / 255.0;
+	color.g = ((color_int >> 8) & 0xFF) / 255.0;
+	color.b = (color_int & 0xFF) / 255.0;
 	return (color);
 }
 
@@ -59,22 +59,12 @@ t_color	add_color(t_color c1, t_color c2)
 	return (color);
 }
 
-// t_color	add_color(t_color c1, t_color c2, t_color c3)
-// {
-// 	t_color	color;
-
-// 	color.r = c1.r + c2.r + c3.r;
-// 	color.g = c1.g + c2.g + c3.g;
-// 	color.b = c1.b + c2.b + c3.b;
-// 	return (color);
-// }
-
-t_color	apply_bright(t_color light, double bright)
+t_color	color_mul(t_color color, double scale)
 {
-	t_color	color;
+	t_color	ret;
 
-	color.r = light.r * bright;
-	color.g = light.g * bright;
-	color.b = light.b * bright;
-	return (color);
+	ret.r = color.r * scale;
+	ret.g = color.g * scale;
+	ret.b = color.b * scale;
+	return (ret);
 }

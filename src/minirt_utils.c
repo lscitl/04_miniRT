@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 19:58:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 23:19:08 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/04 22:35:47 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,20 @@ void	free_map_info(t_map_info *map)
 	free(map->cam);
 	free(map->obj);
 	free(map);
+}
+
+void	open_texture_img(t_data *img, char *file_name)
+{
+	void	*mlx;
+
+	mlx = mlx_init();
+	if (mlx == NULL)
+		exit(EXIT_FAILURE);
+	img->img = mlx_xpm_file_to_image(mlx, file_name, &img->w, &img->h);
+	if (img->img == NULL)
+		exit(EXIT_FAILURE);
+	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, \
+									&img->line_length, &img->endian);
+	if (img->addr == NULL)
+		exit(EXIT_FAILURE);
 }

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 20:24:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/04 15:05:11 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/05 01:52:59 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ enum e_obj_type
 	CONE,
 	PLANE,
 	CIRCLE,
-	SQUARE,
 	NONE
 };
 
@@ -53,6 +52,13 @@ typedef struct s_obj
 	int				color;
 	double			diameter;
 	double			height;
+	int				surface;
+	double			map_scale;
+	char			*bm;
+	char			*tx;
+	double			kd;
+	double			ks;
+	double			alpha;
 }	t_obj;
 
 typedef struct s_ambi_light

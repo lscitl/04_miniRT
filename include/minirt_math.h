@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_math.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:19:51 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/02 20:22:56 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/04 21:38:59 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,7 @@ t_vec	vec_minus(t_vec vec1, t_vec vec2);
 t_vec	vec_scale(t_vec vec1, double scale);
 t_vec	vec_ray_at_distance(t_ray ray, double distance);
 int		is_zero(double value);
+
+void	find_uv_unit_vec(t_vec orient, t_vec *u_unit, t_vec *v_unit);
 
 #endif

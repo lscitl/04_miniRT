@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt_phong_and_shadow.c                          :+:      :+:    :+:   */
+/*   minirt_is_hit_phong_and_shadow.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:53:53 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 16:30:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 02:05:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static double	adjust_bright(double bright, double light_len);
 static void		apply_diffuse_and_specular(t_hit_info *info, \
-								t_light_info light, t_vec v, t_phong *param);
+								t_light_info light, t_vec v, t_phong *phong);
 static double	is_in_shadow(t_map_info *map, t_hit_info *info, \
 													t_vec light_pos);
 
@@ -27,26 +27,23 @@ Rm = 2 * (Lm dotprod N) * N - Lm
 */
 t_phong	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v)
 {
-	t_phong		param;
 	int			light_index;
 
-	param.ka = map->ambi_light.bright;
-	param.ks = 0.5;
-	param.alpha = 64;
-	param.ambient = map->ambi_light.color;
-	param.ambient = apply_bright(param.ambient, param.ka);
-	param.point_color = param.ambient;
-	param.specular = set_color(0, 0, 0);
+	info->phong.ka = map->ambi_light.bright;
+	info->phong.ambient = color_mul(map->ambi_light.color, info->phong.ka);
+	info->phong.point_color = info->phong.ambient;
+	info->phong.specular = set_color(0, 0, 0);
 	light_index = 0;
 	while (light_index < map->light_cnt)
 	{
-		param.light_len = is_in_shadow(map, info, map->light[light_index].pos);
-		if (param.light_len)
+		info->phong.light_len = \
+			is_in_shadow(map, info, map->light[light_index].pos);
+		if (info->phong.light_len)
 			apply_diffuse_and_specular(info, map->light[light_index], \
-																v, &param);
+															v, &info->phong);
 		light_index++;
 	}
-	return (param);
+	return (info->phong);
 }
 
 static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
@@ -58,6 +55,7 @@ static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
 	int			obj_index;
 
 	shadow_info.distance = DBL_MAX;
+	shadow_info.shadow_flag = TRUE;
 	hit_point.direction = \
 		vec_normalize(vec_minus(light_pos, info->hit_point));
 	hit_point.orig = \
@@ -65,18 +63,18 @@ static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
 	obj_index = 0;
 	while (obj_index < map->obj_cnt)
 	{
-		is_hit(hit_point, &map->obj[obj_index], &shadow_info);
+		is_hit(&map->obj[obj_index], &shadow_info);
 		obj_index++;
 	}
 	light = light_pos;
-	vec_len = vec_length(vec_minus(light, hit_point.orig));
-	if (shadow_info.distance <= vec_len + EPSILON && shadow_info.distance >= 0)
+	vec_len = vec_length(vec_minus(light, hit_point.orig)) + EPSILON;
+	if (shadow_info.distance <= vec_len && shadow_info.distance >= 0)
 		return (0);
 	return (vec_len);
 }
 
 static void	apply_diffuse_and_specular(t_hit_info *info, t_light_info light, \
-													t_vec v, t_phong *param)
+													t_vec v, t_phong *phong)
 {
 	t_vec	light_direction;
 	t_vec	reflect_direction;
@@ -84,19 +82,19 @@ static void	apply_diffuse_and_specular(t_hit_info *info, t_light_info light, \
 	double	l_dot_n;
 	double	r_dot_v_alpha;
 
-	bright = adjust_bright(light.bright, param->light_len);
+	bright = adjust_bright(light.bright, phong->light_len);
 	light_direction = vec_normalize(vec_minus(light.pos, info->hit_point));
-	param->kd = fmax(vec_dotprod(info->norm_vec, light_direction), 0);
-	param->diffuse = apply_bright(light.color, param->kd * bright);
+	phong->kd = fmax(vec_dotprod(info->norm_vec, light_direction), 0);
+	phong->diffuse = color_mul(light.color, phong->kd * bright);
 	l_dot_n = vec_dotprod(light_direction, info->norm_vec);
 	reflect_direction = \
 		vec_minus(vec_scale(info->norm_vec, 2.0 * l_dot_n), light_direction);
-	r_dot_v_alpha = pow(vec_dotprod(reflect_direction, v), param->alpha);
-	param->specular = \
-		add_color(param->specular, \
-			apply_bright(light.color, param->ks * r_dot_v_alpha * bright));
-	param->point_color = \
-		add_color(param->point_color, param->diffuse);
+	r_dot_v_alpha = pow(vec_dotprod(reflect_direction, v), phong->alpha);
+	phong->specular = \
+		add_color(phong->specular, \
+			color_mul(light.color, phong->ks * r_dot_v_alpha * bright));
+	phong->point_color = \
+		add_color(phong->point_color, phong->diffuse);
 }
 
 static double	adjust_bright(double bright, double light_len)

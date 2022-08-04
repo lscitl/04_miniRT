@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:10:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/26 18:56:51 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 00:32:10 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ static int	set_pos_and_color_sphere(t_obj *sphere, char **pos, char **color)
 		if (color_tmp < 0 || color_tmp > 255)
 			return (EXIT_FAILURE);
 		sphere->color |= color_tmp << (2 - i) * 8;
-		// sphere->color = sphere->color << 8 | color_tmp;
 		i++;
 	}
 	return (EXIT_SUCCESS);

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 23:14:26 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 01:21:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,21 @@
 
 enum	e_surface
 {
-	DEFAULT,
-	CHECKER_BOARD,
-	TEXTURE
+	CHECKER_BOARD = 1,
+	TEXTURE = 2,
+	BUMP_MAP = 4
 };
+
+typedef struct s_data
+{
+	void	*img;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		w;
+	int		h;
+	int		endian;
+}	t_data;
 
 typedef struct s_phong
 {
@@ -73,20 +84,23 @@ typedef struct s_phong
 
 typedef struct s_obj_info
 {
-	int		type;
-	int		surface;
 	t_vec	pos;
 	t_vec	orient;
 	t_color	color;
-	t_phong	param;
-	// t_data	*texture;
+	t_data	tx;
+	t_data	bm;
 	double	radius;
 	double	r_sqare;
 	double	rsq_div_hsq;
 	double	rsq_div_h;
-	double	c_board_scale;
+	double	map_scale;
 	double	height;
 	double	width;
+	double	kd;
+	double	ks;
+	double	alpha;
+	int		type;
+	int		surface;
 }	t_obj_info;
 
 typedef struct s_ambi_light_info
@@ -125,15 +139,6 @@ typedef struct s_map_info
 	int					obj_cnt;
 }	t_map_info;
 
-typedef struct s_data
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-}	t_data;
-
 typedef struct s_vars
 {
 	void		*mlx;
@@ -160,18 +165,21 @@ int		exit_hook(t_vars *vars);
 
 // minirt_utils_color.c
 int		get_color(int color, int target_color);
-int		convert_color(t_color color);
+int		convert_color_to_int(t_color color);
 t_color	set_color(double red, double green, double blue);
-t_color	apply_bright(t_color light, double bright);
+t_color	color_mul(t_color color, double scale);
 t_color	add_color(t_color c1, t_color c2);
-t_color	set_color2(int color);
+t_color	set_color_from_int(int color_int);
 
 // minirt_utils.c
 void	free_map_info(t_map_info *map);
 void	free_map(t_map *map);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 int		get_mlx_pixel_color(t_data *data, int x, int y);
+void	open_texture_img(t_data *img, char *file_name);
 
+
+//test
 void	print_map_info(t_map_info *map);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/03 16:45:41 by chanhpar         ###   ########.fr        #
+#    Updated: 2022/08/05 00:30:37 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,10 @@ SRCS_DIR 		:=	src
 OBJS_DIR		:=	obj
 
 SRC				:=	minirt_main.c \
-					minirt_is_hit_phong_and_shadow.c \
 					minirt_is_hit_calc_coeff.c \
+					minirt_is_hit_main.c \
+					minirt_is_hit_phong_and_shadow.c \
 					minirt_is_hit_utils.c \
-					minirt_is_hit.c \
 					minirt_main_convert_data.c \
 					minirt_main_draw_img.c \
 					minirt_main_initialize.c \
@@ -31,10 +31,10 @@ SRC				:=	minirt_main.c \
 					minirt_map_parsing_set_obj.c \
 					minirt_map_parsing_utils_lst.c \
 					minirt_map_parsing_utils.c \
-					minirt_math_utils_1.c \
-					minirt_math_utils_2.c \
-					minirt_math_utils_3.c \
 					minirt_utils_color.c \
+					minirt_utils_math_1.c \
+					minirt_utils_math_2.c \
+					minirt_utils_math_3.c \
 					minirt_utils.c \
 					print_map_for_debugging.c
 
@@ -72,11 +72,10 @@ all				:	$(NAME)
 
 clean			:
 					$(RM) $(OBJS)
-					@$(MAKE) -C $(MLX_PATH) clean
-					@$(MAKE) -C $(LFT_PATH) clean
 
 fclean			:	clean
 					@$(MAKE) -C $(LFT_PATH) fclean
+					@$(MAKE) -C $(MLX_PATH) clean
 					$(RM) libmlx.dylib
 					$(RM) $(NAME)
 

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 23:10:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 01:29:08 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,7 @@ void	set_ambi_light_and_light_info(t_map_info *map_info, t_map *map, \
 	t_light				*light;
 	int					i;
 
-	map_info->ambi_light.color.r = get_color(ambi_light.color, RED) / 255.0;
-	map_info->ambi_light.color.g = get_color(ambi_light.color, GREEN) / 255.0;
-	map_info->ambi_light.color.b = get_color(ambi_light.color, BLUE) / 255.0;
+	map_info->ambi_light.color = set_color_from_int(ambi_light.color);
 	map_info->ambi_light.bright = ambi_light.bright;
 	map_info->light_cnt = lst_cnt((t_list *)map->light);
 	light_info = ft_malloc(sizeof(t_light_info) * map_info->light_cnt);
@@ -33,9 +31,7 @@ void	set_ambi_light_and_light_info(t_map_info *map_info, t_map *map, \
 	while (light)
 	{
 		light_info[i].bright = light->bright;
-		light_info[i].color.r = get_color(light->color, RED) / 255.0;
-		light_info[i].color.g = get_color(light->color, GREEN) / 255.0;
-		light_info[i].color.b = get_color(light->color, BLUE) / 255.0;
+		light_info[i].color = set_color_from_int(light->color);
 		light_info[i].pos = vec_make(light->pos);
 		light = light->next;
 		i++;
@@ -103,13 +99,19 @@ void	set_obj_info(t_map_info *map, t_obj *obj)
 		map->obj[i].type = obj->type;
 		map->obj[i].pos = vec_make(obj->pos);
 		map->obj[i].orient = vec_make(obj->orient);
-		map->obj[i].color.r = get_color(obj->color, RED) / 255.0;
-		map->obj[i].color.g = get_color(obj->color, GREEN) / 255.0;
-		map->obj[i].color.b = get_color(obj->color, BLUE) / 255.0;
-		map->obj[i].radius = obj->diameter / 2;
+		map->obj[i].color = set_color_from_int(obj->color);
+		map->obj[i].radius = obj->diameter / 2.0;
 		map->obj[i].r_sqare = map->obj[i].radius * map->obj[i].radius;
 		map->obj[i].height = obj->height;
-		map->obj[i].surface = CHECKER_BOARD;
+		map->obj[i].surface = obj->surface;
+		map->obj[i].map_scale = obj->map_scale;
+		map->obj[i].kd = 1;//obj->kd;
+		map->obj[i].ks = 0.5;//obj->ks;
+		map->obj[i].alpha = 64;//obj->alpha;
+		if (obj->tx)
+			open_texture_img(&map->obj[i].tx, obj->tx);
+		if (obj->bm)
+			open_texture_img(&map->obj[i].bm, obj->bm);
 		i += set_cylinder_and_cone_info(&map->obj[i]);
 		i++;
 		obj = obj->next;
