@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:58:51 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/30 19:49:38 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 20:55:09 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	replace_all_white_space_to_sp(char *str)
 	}
 }
 
-int	args_len_check(char **args, int len)
+int	get_args_len(char **args)
 {
 	int	i;
 
@@ -31,9 +31,7 @@ int	args_len_check(char **args, int len)
 	i = 0;
 	while (args[i])
 		i++;
-	if (len == i)
-		return (EXIT_SUCCESS);
-	return (EXIT_FAILURE);
+	return (i);
 }
 
 int	is_all_digit(char *str)

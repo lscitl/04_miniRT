@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 13:57:54 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 01:31:29 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,11 +158,13 @@ typedef struct s_vars
 	t_data		img;
 }	t_vars;
 
+// minirt_convert_data_obj.c
+void	set_obj_info(t_map_info *map, t_obj *obj);
+
 // minirt_convert_data.c
 void	set_ambi_light_and_light_info(t_map_info *map_info, t_map *map, \
 													t_ambi_light ambi_light);
 void	set_cam_info(t_map_info *map, t_camera *cam);
-void	set_obj_info(t_map_info *map, t_obj *obj);
 
 // minirt_draw_img.c
 void	draw_image(t_vars *vars, t_map_info *map, t_cam_info *cam);
@@ -174,9 +176,11 @@ void	init_var_and_set_map_data(t_vars *vars, char *arg);
 int		key_hook(int keycode, t_vars *vars);
 int		exit_hook(t_vars *vars);
 
-// minirt_utils_color.c
+// minirt_utils_color_1.c
 int		get_color(int color, int target_color);
 int		convert_color_to_int(t_color color);
+
+// minirt_utils_color_2.c
 t_color	set_color(double red, double green, double blue);
 t_color	color_mul(t_color color, double scale);
 t_color	add_color(t_color c1, t_color c2);

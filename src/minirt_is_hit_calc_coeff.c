@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt_is_hit_calc_coeff.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhpar <chanhpar@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/03 16:28:31 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/03 16:43:50 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/05 23:51:05 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,15 @@ static void	calc_coeff_plane(double coeff[3], t_ray ray, t_obj_info *obj);
 
 void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj)
 {
-	if (obj->type == SPHERE)
-	{
-		calc_coeff_sphere(coeff, ray, obj);
-	}
-	else if (obj->type == CYLINDER)
-	{
-		calc_coeff_cylinder(coeff, ray, obj);
-	}
-	else if (obj->type == CONE)
-	{
-		calc_coeff_cone(coeff, ray, obj);
-	}
-	else
-	{
-		calc_coeff_plane(coeff, ray, obj);
-	}
+	static void (*const	func_array[5])(double *, t_ray, t_obj_info *) = {
+		calc_coeff_sphere, \
+		calc_coeff_cylinder, \
+		calc_coeff_cone, \
+		calc_coeff_plane, \
+		calc_coeff_plane, \
+	};
+
+	func_array[obj->type](coeff, ray, obj);
 }
 
 static void	calc_coeff_sphere(double coeff[3], t_ray ray, t_obj_info *obj)
@@ -60,9 +53,9 @@ static void	calc_coeff_cylinder(double coeff[3], t_ray ray, t_obj_info *obj)
 	w = vec_minus(ray.orig, obj->pos);
 	v_dot_h = vec_dotprod(v, h);
 	w_dot_h = vec_dotprod(w, h);
-	coeff[0] = 1.0 - pow(v_dot_h, 2);
+	coeff[0] = 1.0 - v_dot_h * v_dot_h;
 	coeff[1] = 2.0 * (vec_dotprod(v, w) - v_dot_h * w_dot_h);
-	coeff[2] = vec_dotprod(w, w) - pow(w_dot_h, 2) - obj->r_sqare;
+	coeff[2] = vec_dotprod(w, w) - w_dot_h * w_dot_h - obj->r_sqare;
 }
 
 static void	calc_coeff_cone(double coeff[3], t_ray ray, t_obj_info *obj)
@@ -78,11 +71,12 @@ static void	calc_coeff_cone(double coeff[3], t_ray ray, t_obj_info *obj)
 	w = vec_minus(ray.orig, obj->pos);
 	v_dot_h = vec_dotprod(v, h);
 	w_dot_h = vec_dotprod(w, h);
-	coeff[0] = 1.0 - (1.0 + obj->rsq_div_hsq) * pow(v_dot_h, 2);
+	coeff[0] = 1.0 - (1.0 + obj->rsq_div_hsq) * v_dot_h * v_dot_h;
 	coeff[1] = 2.0 * (vec_dotprod(w, v) + obj->rsq_div_h * v_dot_h \
-			- (1.0 + obj->rsq_div_hsq) * w_dot_h * v_dot_h);
-	coeff[2] = vec_dotprod(w, w) - (1.0 + obj->rsq_div_hsq) * pow(w_dot_h, 2) \
-			- obj->r_sqare + 2.0 * obj->rsq_div_h * w_dot_h;
+							- (1.0 + obj->rsq_div_hsq) * w_dot_h * v_dot_h);
+	coeff[2] = vec_dotprod(w, w) \
+				- (1.0 + obj->rsq_div_hsq) * w_dot_h * w_dot_h \
+						- obj->r_sqare + 2.0 * obj->rsq_div_h * w_dot_h;
 }
 
 static void	calc_coeff_plane(double coeff[3], t_ray ray, t_obj_info *obj)

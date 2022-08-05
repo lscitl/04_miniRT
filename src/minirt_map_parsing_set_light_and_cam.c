@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 17:01:59 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/27 17:00:33 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 23:13:28 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ int	set_ambient_light(t_map *map, char **args)
 	int		color_tmp;
 	int		i;
 
-	if (args_len_check(args, 3))
+	if (get_args_len(args) != 3)
 		return (EXIT_FAILURE);
 	map->ambi_light.bright = ft_strtod(args[1], &end);
 	if (*end != 0 || map->ambi_light.bright < 0 || map->ambi_light.bright > 1)
 		return (EXIT_FAILURE);
 	color = ft_split(args[2], ',');
-	if (args_len_check(color, 3))
+	if (get_args_len(color) != 3)
 		return (EXIT_FAILURE);
 	i = 0;
 	while (i < 3)
@@ -50,7 +50,7 @@ int	set_light(t_map *map, char **args)
 	char	**color;
 	char	*end;
 
-	if (args_len_check(args, 3) && args_len_check(args, 4))
+	if (get_args_len(args) != 3 && get_args_len(args) != 4)
 		return (EXIT_FAILURE);
 	light = ft_malloc(sizeof(t_light));
 	ft_memset(light, 0, sizeof(t_light));
@@ -75,7 +75,7 @@ static int	set_pos_and_color_light(t_light *light, char **pos, char **color)
 	int		color_tmp;
 	int		i;
 
-	if (args_len_check(pos, 3) || (color && args_len_check(color, 3)))
+	if (get_args_len(pos) != 3 || (color && get_args_len(color) != 3))
 		return (EXIT_FAILURE);
 	i = 0;
 	while (i < 3)
@@ -104,7 +104,7 @@ int	set_camera(t_map *map, char **args)
 	char		**orient;
 	char		*end;
 
-	if (args_len_check(args, 4))
+	if (get_args_len(args) != 4)
 		return (EXIT_FAILURE);
 	cam = ft_malloc(sizeof(t_camera));
 	ft_memset(cam, 0, sizeof(t_camera));
@@ -127,7 +127,7 @@ static int	set_pos_and_orient_cam(t_camera *cam, char **pos, char **orient)
 	char		*pos_end;
 	char		*orient_end;
 
-	if (args_len_check(pos, 3) || args_len_check(orient, 3))
+	if (get_args_len(pos) != 3 || get_args_len(orient) != 3)
 		return (EXIT_FAILURE);
 	i = 0;
 	while (pos[i] && orient[i])

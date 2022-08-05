@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/23 03:38:53 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/05 02:01:18 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 23:23:31 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,19 @@ static int	is_hit_sphere(t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cylinder(t_obj_info *obj, t_hit_info *info);
 static int	is_hit_cone(t_obj_info *obj, t_hit_info *info);
 
-static int (*const	g_func_array[5])(t_obj_info *, t_hit_info *) = {
-	is_hit_sphere, \
-	is_hit_cylinder, \
-	is_hit_cone, \
-	is_hit_plane_circle, \
-	is_hit_plane_circle \
-};
-
 // if hit_info is updated, return 0. no hit -> return -1.
 // set hit information in info
 int	is_hit(t_obj_info *obj, t_hit_info *info)
 {
-	return (g_func_array[obj->type](obj, info));
+	static int (*const	func_array[5])(t_obj_info *, t_hit_info *) = {
+		is_hit_sphere, \
+		is_hit_cylinder, \
+		is_hit_cone, \
+		is_hit_plane_circle, \
+		is_hit_plane_circle \
+	};
+
+	return (func_array[obj->type](obj, info));
 }
 
 // (orig + t * dir - obj->pos) * orient == 0;
@@ -96,11 +96,15 @@ static int	is_hit_cylinder(t_obj_info *obj, t_hit_info *info)
 	if (flag >= 0)
 	{
 		if (root[0] <= info->distance && root[0] >= 0)
+		{
 			if (update_hit_info(info, obj, root[0]) == 0)
 				return (0);
+		}
 		if (flag > 0 && root[1] <= info->distance && root[1] >= 0)
+		{
 			if (update_hit_info(info, obj, root[1]) == 0)
 				return (0);
+		}
 	}
 	return (-1);
 }
@@ -121,11 +125,15 @@ static int	is_hit_cone(t_obj_info *obj, t_hit_info *info)
 	if (flag > 0)
 	{
 		if (root[0] <= info->distance && root[0] >= 0)
+		{
 			if (update_hit_info(info, obj, root[0]) == 0)
 				return (0);
+		}
 		if (flag > 0 && root[1] <= info->distance && root[1] >= 0)
+		{
 			if (update_hit_info(info, obj, root[1]) == 0)
 				return (0);
+		}
 	}
 	return (-1);
 }

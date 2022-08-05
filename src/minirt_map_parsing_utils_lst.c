@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:20:45 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/27 15:12:17 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 01:24:51 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,20 @@ void	ft_lst_node_clear(t_list *lst)
 	{
 		tmp = lst;
 		lst = lst->next;
+		free(tmp);
+	}
+}
+
+void	ft_obj_node_clear(t_obj *obj)
+{
+	t_obj	*tmp;
+
+	while (obj)
+	{
+		tmp = obj;
+		obj = obj->next;
+		free(tmp->bm);
+		free(tmp->tx);
 		free(tmp);
 	}
 }

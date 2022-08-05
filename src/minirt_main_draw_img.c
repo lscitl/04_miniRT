@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:09:43 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 15:04:53 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 23:00:57 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,6 @@ void	draw_image(t_vars *vars, t_map_info *map, t_cam_info *cam)
 		x = 0;
 		while (x < SCRN_WIDTH)
 		{
-			// printf("addr: %p\n", map->obj->bm.img);
-			// // mlx_put_image_to_window(vars->mlx, vars->win, map->obj->bm.img, 0, 0);
-			// while(TRUE)
-			// {
-
-			// }
 			set_ray(cam, &info.ray, x, y);
 			get_hit_info(map, &info);
 			put_pixel_in_img(vars, &info, x, y);

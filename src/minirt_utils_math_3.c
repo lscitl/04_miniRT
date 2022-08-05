@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:00:24 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 15:25:57 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 01:10:16 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,21 +58,4 @@ int	solve_linear(double *coeff, double *root)
 	}
 	root[0] = -coeff[1] / coeff[0];
 	return (0);
-}
-
-void	find_uv_unit_vec(t_vec orient, t_vec *u_unit, t_vec *v_unit)
-{
-	const t_vec	x_vec = {1, 0, 0};
-	const t_vec	y_vec = {0, 1, 0};
-
-	if (is_zero(fabs(orient.y) - 1) == FALSE)
-	{
-		*u_unit = vec_normalize(vec_crossprod(y_vec, orient));
-		*v_unit = vec_normalize(vec_crossprod(orient, *u_unit));
-	}
-	else
-	{
-		*v_unit = x_vec;
-		*u_unit = vec_crossprod(orient, *v_unit);
-	}
 }

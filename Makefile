@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/05 17:42:22 by chanhpar         ###   ########.fr        #
+#    Updated: 2022/08/06 01:35:57 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,10 @@ SRC				:=	minirt_main.c \
 					minirt_is_hit_calc_coeff.c \
 					minirt_is_hit_main.c \
 					minirt_is_hit_phong_and_shadow.c \
-					minirt_is_hit_utils.c \
+					minirt_is_hit_update_hit_info_get_color.c \
+					minirt_is_hit_update_hit_info_uv.c \
+					minirt_is_hit_update_hit_info.c \
+					minirt_main_convert_data_obj.c \
 					minirt_main_convert_data.c \
 					minirt_main_draw_img.c \
 					minirt_main_initialize.c \
@@ -25,13 +28,13 @@ SRC				:=	minirt_main.c \
 					minirt_map_parsing_main.c \
 					minirt_map_parsing_set_light_and_cam.c \
 					minirt_map_parsing_set_map_data.c \
-					minirt_map_parsing_set_obj_cylinder_and_cone.c \
-					minirt_map_parsing_set_obj_plane.c \
-					minirt_map_parsing_set_obj_sphere.c \
 					minirt_map_parsing_set_obj.c \
 					minirt_map_parsing_utils_lst.c \
+					minirt_map_parsing_utils_obj_1.c \
+					minirt_map_parsing_utils_obj_2.c \
 					minirt_map_parsing_utils.c \
-					minirt_utils_color.c \
+					minirt_utils_color_1.c \
+					minirt_utils_color_2.c \
 					minirt_utils_math_1.c \
 					minirt_utils_math_2.c \
 					minirt_utils_math_3.c \
@@ -48,7 +51,7 @@ MLX_PATH		:=	mlx
 L_MLX			:=	$(MLX_PATH)/libmlx.dylib
 CC				:=	cc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror -g
+CFLAGS			:=	-Wall -Wextra -Werror -g #-fsanitize=address
 INC				:=	-I$(LFT_PATH)/include -Iinclude -I$(MLX_PATH)
 LIB_PATH		:=	-L$(MLX_PATH) -L$(LFT_PATH)
 LIB				:=	-lft -lmlx

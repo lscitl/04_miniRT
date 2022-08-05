@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 17:49:36 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 01:25:44 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,5 @@ static void	set_map_info(t_vars *vars, t_map *map)
 	set_cam_info(vars->map, map->camera);
 	ft_lst_node_clear((t_list *)map->camera);
 	set_obj_info(vars->map, map->obj);
-	ft_lst_node_clear((t_list *)map->obj);
+	ft_obj_node_clear(map->obj);
 }

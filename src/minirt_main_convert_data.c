@@ -6,14 +6,13 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 15:39:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 01:32:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
 static void	set_cam_axis(t_cam_info *cam);
-static int	set_cylinder_and_cone_info(t_obj_info *obj_info);
 
 void	set_ambi_light_and_light_info(t_map_info *map_info, t_map *map, \
 													t_ambi_light ambi_light)
@@ -85,63 +84,4 @@ static void	set_cam_axis(t_cam_info *cam)
 		cam->y_vec = vec_normalize(vec_crossprod(x_vec, cam->orient));
 		cam->x_vec = vec_normalize(vec_crossprod(cam->orient_neg, cam->y_vec));
 	}
-}
-
-void	set_obj_info(t_map_info *map, t_obj *obj)
-{
-	int		i;
-
-	map->obj_cnt = lst_cnt_obj(obj);
-	map->obj = ft_malloc(sizeof(t_obj_info) * map->obj_cnt);
-	i = 0;
-	while (obj)
-	{
-		map->obj[i].type = obj->type;
-		map->obj[i].pos = vec_make(obj->pos);
-		map->obj[i].orient = vec_make(obj->orient);
-		map->obj[i].color = set_color_from_int(obj->color);
-		map->obj[i].radius = obj->diameter / 2.0;
-		map->obj[i].r_sqare = map->obj[i].radius * map->obj[i].radius;
-		map->obj[i].height = obj->height;
-		map->obj[i].surface = TEXTURE | BUMP_MAP;
-		map->obj[i].map_scale = 1;
-		map->obj[i].surface = obj->surface;
-		// map->obj[i].map_scale = obj->map_scale;
-		map->obj[i].kd = 1;//obj->kd;
-		map->obj[i].ks = 0.5;//obj->ks;
-		map->obj[i].alpha = 64;//obj->alpha;
-		// if (obj->tx)
-			// open_texture_img(&map->obj[i].tx, obj->tx);
-			open_texture_img(&map->obj[i].tx, "texture/block.xpm");
-		// if (obj->bm)
-			// open_texture_img(&map->obj[i].bm, obj->bm);
-			open_texture_img(&map->obj[i].bm, "texture/block_normal.xpm");
-		i += set_cylinder_and_cone_info(&map->obj[i]);
-		i++;
-		obj = obj->next;
-	}
-}
-
-static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
-{
-	if (obj_info->type == CYLINDER)
-	{
-		obj_info[1] = obj_info[0];
-		obj_info[2] = obj_info[0];
-		obj_info[1].type = CIRCLE;
-		obj_info[1].orient = vec_scale(obj_info[1].orient, -1);
-		obj_info[2].type = CIRCLE;
-		obj_info[2].pos = vec_plus(obj_info[0].pos, \
-							vec_scale(obj_info[0].orient, obj_info[0].height));
-		return (2);
-	}
-	else if (obj_info->type == CONE)
-	{
-		obj_info[0].rsq_div_h = obj_info[0].r_sqare / obj_info[0].height;
-		obj_info[0].rsq_div_hsq = obj_info[0].rsq_div_h / obj_info[0].height;
-		obj_info[1] = obj_info[0];
-		obj_info[1].type = CIRCLE;
-		return (1);
-	}
-	return (0);
 }

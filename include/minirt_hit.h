@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 15:44:57 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 01:15:05 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,22 @@ typedef struct s_hit_info
 	int			shadow_flag;
 }	t_hit_info;
 
-int		is_hit(t_obj_info *obj, t_hit_info *info);
-
-int	update_hit_info(t_hit_info *info, t_obj_info *obj, double root);
+// minirt_is_hit_calc_coeff.c
 void	calc_coeff(double coeff[3], t_ray ray, t_obj_info *obj);
 
-// minirt_phong_and_shadow.c
+// minirt_is_hit_main.c
+int		is_hit(t_obj_info *obj, t_hit_info *info);
+
+// minirt_is_hit_phong_and_shadow.c
 t_phong	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v);
+
+// minirt_is_hit_update_hit_info_get_color.c
+t_color	get_point_color(t_obj_info *obj, t_hit_info *info);
+
+// minirt_is_hit_update_hit_info_uv.c
+void	get_uv_mapping(t_obj_info *obj, t_hit_info *info, t_uv_map *uv_map);
+
+// minirt_is_hit_update_hit_info.c
+int		update_hit_info(t_hit_info *info, t_obj_info *obj, double root);
 
 #endif
