@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 15:00:24 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 00:28:24 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 15:25:57 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	find_uv_unit_vec(t_vec orient, t_vec *u_unit, t_vec *v_unit)
 	}
 	else
 	{
-		*v_unit = vec_normalize(vec_crossprod(x_vec, orient));
-		*u_unit = vec_normalize(vec_crossprod(orient, *v_unit));
+		*v_unit = x_vec;
+		*u_unit = vec_crossprod(orient, *v_unit);
 	}
 }

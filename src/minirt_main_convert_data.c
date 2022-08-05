@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 13:57:42 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/05 15:39:06 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,15 +103,19 @@ void	set_obj_info(t_map_info *map, t_obj *obj)
 		map->obj[i].radius = obj->diameter / 2.0;
 		map->obj[i].r_sqare = map->obj[i].radius * map->obj[i].radius;
 		map->obj[i].height = obj->height;
+		map->obj[i].surface = TEXTURE | BUMP_MAP;
+		map->obj[i].map_scale = 1;
 		map->obj[i].surface = obj->surface;
-		map->obj[i].map_scale = obj->map_scale;
+		// map->obj[i].map_scale = obj->map_scale;
 		map->obj[i].kd = 1;//obj->kd;
 		map->obj[i].ks = 0.5;//obj->ks;
 		map->obj[i].alpha = 64;//obj->alpha;
-		if (obj->tx)
-			open_texture_img(&map->obj[i].tx, obj->tx);
-		if (obj->bm)
-			open_texture_img(&map->obj[i].bm, obj->bm);
+		// if (obj->tx)
+			// open_texture_img(&map->obj[i].tx, obj->tx);
+			open_texture_img(&map->obj[i].tx, "texture/block.xpm");
+		// if (obj->bm)
+			// open_texture_img(&map->obj[i].bm, obj->bm);
+			open_texture_img(&map->obj[i].bm, "texture/block_normal.xpm");
 		i += set_cylinder_and_cone_info(&map->obj[i]);
 		i++;
 		obj = obj->next;

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:03:47 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/05 13:28:43 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 15:45:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,32 +95,30 @@ t_vec	get_n_vec_from_bm(t_obj_info *obj, t_hit_info *info, int x, int y)
 	bm_norm.x -= 1;
 	bm_norm.y -= 1;
 	bm_norm.z -= 1;
-	ret.x = t.x * bm_norm.x + b.x * bm_norm.y + info->norm_vec.x * bm_norm.z;
-	ret.y = t.y * bm_norm.x + b.y * bm_norm.y + info->norm_vec.y * bm_norm.z;
-	ret.z = t.z * bm_norm.x + b.z * bm_norm.y + info->norm_vec.z * bm_norm.z;
-	return (ret);
+	ret.x = b.x * bm_norm.x + t.x * bm_norm.y + info->norm_vec.x * bm_norm.z;
+	ret.y = b.y * bm_norm.x + t.y * bm_norm.y + info->norm_vec.y * bm_norm.z;
+	ret.z = b.z * bm_norm.x + t.z * bm_norm.y + info->norm_vec.z * bm_norm.z;
+	return (vec_normalize(ret));
 }
 
 void	update_n_vec_from_bm(t_obj_info *obj, t_hit_info *info)
 {
 	int		x;
 	int		y;
-	double	scale;
 
-	scale = obj->map_scale;
 	if (obj->type == PLANE || obj->type == CIRCLE)
 	{
-		x = ((int)floor(info->uv_map.u * scale)) % obj->bm.w;
-		y = ((int)floor(info->uv_map.v * scale)) % obj->bm.h;
+		x = ((int)floor(info->uv_map.u * PLANE_TX_SCALE)) % obj->bm.w;
+		y = ((int)floor(info->uv_map.v * PLANE_TX_SCALE)) % obj->bm.h;
 		if (x < 0)
-			x += 200;
+			x += obj->bm.w;
 		if (y < 0)
-			y += 200;
+			y += obj->bm.h;
 	}
 	else
 	{
-		x = ((int)floor(info->uv_map.u * (obj->bm.w) * scale)) % obj->bm.w;
-		y = ((int)floor(info->uv_map.v * (obj->bm.h) * scale)) % obj->bm.h;
+		x = ((int)floor(info->uv_map.u * (obj->bm.w))) % obj->bm.w;
+		y = ((int)floor(info->uv_map.v * (obj->bm.h))) % obj->bm.h;
 	}
 	info->norm_vec = get_n_vec_from_bm(obj, info, x, y);
 }
@@ -133,17 +131,17 @@ t_color	get_color_from_tx(t_obj_info *obj, t_hit_info *info)
 
 	if (obj->type == PLANE || obj->type == CIRCLE)
 	{
-		x = ((int)floor(info->uv_map.u * obj->map_scale)) % obj->tx.w;
-		y = ((int)floor(info->uv_map.v * obj->map_scale)) % obj->tx.h;
+		x = ((int)floor(info->uv_map.u * PLANE_TX_SCALE)) % obj->tx.w;
+		y = ((int)floor(info->uv_map.v * PLANE_TX_SCALE)) % obj->tx.h;
 		if (x < 0)
-			x += 200;
+			x += obj->tx.w;
 		if (y < 0)
-			y += 200;
+			y += obj->tx.h;
 	}
 	else
 	{
-		x = ((int)floor(info->uv_map.u * (obj->tx.w) * 2)) % obj->tx.w;
-		y = ((int)floor(info->uv_map.v * (obj->tx.h) * 2)) % obj->tx.h;
+		x = ((int)floor(info->uv_map.u * (obj->tx.w))) % obj->tx.w;
+		y = ((int)floor(info->uv_map.v * (obj->tx.h))) % obj->tx.h;
 	}
 	color = set_color_from_int(get_mlx_pixel_color(&obj->tx, x, y));
 	return (color);
