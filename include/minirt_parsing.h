@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 20:24:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 01:52:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 17:50:42 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ typedef struct s_map
 }	t_map;
 
 // minirt_map_parsing_main.c
-t_map	*map_parsing(char *file_path);
+void	map_parsing(char *file_path, t_map *map);
 
 // minirt_map_parsing_set_map_data.c
 int		set_map_data(t_map *map, char **map_args);

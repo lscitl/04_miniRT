@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/02 22:44:44 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 17:50:04 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,10 @@ static char	**get_map_args(char *file_path);
 static void	get_map_data_to_buffer(t_buffer *buf, int fd);
 static int	check_invalid_map(t_map *map);
 
-t_map	*map_parsing(char *file_path)
+void	map_parsing(char *file_path, t_map *map)
 {
-	t_map		*map;
 	char		**map_args;
 
-	map = ft_malloc(sizeof(t_map));
 	ft_memset(map, 0, sizeof(t_map));
 	map_args = get_map_args(file_path);
 	if (set_map_data(map, map_args) || check_invalid_map(map))
@@ -30,7 +28,6 @@ t_map	*map_parsing(char *file_path)
 		exit(EXIT_FAILURE);
 	}
 	free_strs(map_args);
-	return (map);
 }
 
 static char	**get_map_args(char *file_path)
