@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:03:47 by chanhpar          #+#    #+#             */
-/*   Updated: 2022/08/05 02:15:22 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 13:28:43 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int	update_hit_info(t_hit_info *info, t_obj_info *obj, double root)
 	}
 	info->hit_point = hit_point;
 	info->distance = root;
-	// if (info->shadow_flag == TRUE)
-	// 	return (0);
+	if (info->shadow_flag == TRUE)
+		return (0);
 	info->phong.kd = obj->kd;
 	info->phong.ks = obj->ks;
 	info->phong.alpha = obj->alpha;

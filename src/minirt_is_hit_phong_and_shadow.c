@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:53:53 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 02:05:37 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 13:47:31 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,17 @@ t_phong	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v)
 static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
 {
 	t_hit_info	shadow_info;
-	t_ray		hit_point;
 	t_vec		light;
 	double		vec_len;
 	int			obj_index;
 
+	shadow_info = *info;
 	shadow_info.distance = DBL_MAX;
-	shadow_info.shadow_flag = TRUE;
-	hit_point.direction = \
+	shadow_info.shadow_flag = FALSE;
+	shadow_info.ray.direction = \
 		vec_normalize(vec_minus(light_pos, info->hit_point));
-	hit_point.orig = \
-		vec_plus(info->hit_point, vec_scale(hit_point.direction, EPSILON));
+	shadow_info.ray.orig = \
+		vec_plus(info->hit_point, vec_scale(shadow_info.ray.direction, EPSILON));
 	obj_index = 0;
 	while (obj_index < map->obj_cnt)
 	{
@@ -67,7 +67,7 @@ static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
 		obj_index++;
 	}
 	light = light_pos;
-	vec_len = vec_length(vec_minus(light, hit_point.orig)) + EPSILON;
+	vec_len = vec_length(vec_minus(light, shadow_info.ray.orig)) + EPSILON;
 	if (shadow_info.distance <= vec_len && shadow_info.distance >= 0)
 		return (0);
 	return (vec_len);
