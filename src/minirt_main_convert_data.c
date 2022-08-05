@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 23:10:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 13:14:12 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	set_cam_info(t_map_info *map, t_camera *cam)
 		c[i].orient_neg = vec_scale(c[i].orient, -1);
 		c[i].angle = cam->angle / 180 * M_PI;
 		c[i].focal_len = SCRN_WIDTH / (2 * atan(c[i].angle / 2));
-		set_cam_axis(c);
+		set_cam_axis(&c[i]);
 		center = vec_scale(c[i].orient, c[i].focal_len);
 		center = vec_plus(center, vec_scale(c[i].x_vec, SCRN_WIDTH / 2 * -1));
 		c[i].screen = \

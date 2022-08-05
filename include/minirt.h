@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/03 23:14:26 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/05 13:01:52 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,17 @@
 # define KEY_RIGHT			124
 # define KEY_DOWN			125
 # define KEY_UP				126
+
+# define KEY_1				18
+# define KEY_2				19
+# define KEY_3				20
+# define KEY_4				21
+# define KEY_5				23
+# define KEY_6				22
+# define KEY_7				26
+# define KEY_8				28
+# define KEY_9				25
+# define KEY_0				29
 
 # define KEY_ESC			53
 # define KEY_EVENT_PRESS	2
