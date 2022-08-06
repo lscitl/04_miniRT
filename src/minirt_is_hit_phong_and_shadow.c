@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:53:53 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:09:47 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 20:58:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	apply_diffuse_and_specular(t_hit_info *info, t_light_info light, \
 	l_dot_n = vec_dotprod(light_direction, info->norm_vec);
 	reflect_direction = \
 		vec_minus(vec_scale(info->norm_vec, 2.0 * l_dot_n), light_direction);
-		r_dot_v_alpha = pow(fmax(vec_dotprod(reflect_direction, v), 0), \
+	r_dot_v_alpha = pow(fmax(vec_dotprod(reflect_direction, v), 0), \
 			phong->alpha);
 	phong->specular = add_color(phong->specular, color_mul(light.color, \
 				phong->ks * r_dot_v_alpha * bright));

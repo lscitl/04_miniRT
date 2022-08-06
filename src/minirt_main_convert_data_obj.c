@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:16:40 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 20:44:48 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,6 @@ static void	find_uv_unit_vec(t_obj_info *obj)
 	else
 	{
 		obj->uv_map.v_vec = x_vec;
-		obj->uv_map.u_vec = vec_crossprod(obj->orient, obj->uv_map.v_vec);
+		obj->uv_map.u_vec = vec_crossprod(obj->orient, x_vec);
 	}
 }

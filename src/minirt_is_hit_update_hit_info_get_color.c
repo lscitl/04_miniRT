@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:52:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 18:35:04 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 19:51:16 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_color	get_point_color(t_obj_info *obj, t_hit_info *info)
 	if (obj->surface & CHECKER_BOARD)
 	{
 		scale = obj->map_scale * M_PI / 4.0;
-		flag = (int)(info->uv_map.u / scale) + (int)(info->uv_map.v / scale);
+		flag = (floor(info->uv_map.u / scale) + floor(info->uv_map.v / scale));
 		if (flag % 2)
 			return (set_color(0, 0, 0));
 		return (set_color(1, 1, 1));
@@ -72,8 +72,8 @@ static void	update_n_vec_from_bm(t_obj_info *obj, t_hit_info *info)
 	int		x;
 	int		y;
 
-	x = ((int)(info->uv_map.u * BM_TX_SCALE)) % obj->bm.w;
-	y = ((int)(info->uv_map.v * BM_TX_SCALE)) % obj->bm.h;
+	x = ((int)floor(info->uv_map.u * BM_TX_SCALE)) % obj->bm.w;
+	y = ((int)floor(info->uv_map.v * BM_TX_SCALE)) % obj->bm.h;
 	if (x < 0)
 		x += obj->bm.w;
 	if (y < 0)
@@ -87,8 +87,8 @@ static t_color	get_color_tx(t_obj_info *obj, t_hit_info *info)
 	int		x;
 	int		y;
 
-	x = ((int)(info->uv_map.u * BM_TX_SCALE)) % obj->tx.w;
-	y = ((int)(info->uv_map.v * BM_TX_SCALE)) % obj->tx.h;
+	x = ((int)floor(info->uv_map.u * BM_TX_SCALE)) % obj->tx.w;
+	y = ((int)floor(info->uv_map.v * BM_TX_SCALE)) % obj->tx.h;
 	if (x < 0)
 		x += obj->tx.w;
 	if (y < 0)

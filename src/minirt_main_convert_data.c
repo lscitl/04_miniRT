@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:32:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 20:43:39 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static void	set_cam_axis(t_cam_info *cam)
 	}
 	else
 	{
-		cam->y_vec = vec_normalize(vec_crossprod(x_vec, cam->orient));
-		cam->x_vec = vec_normalize(vec_crossprod(cam->orient_neg, cam->y_vec));
+		cam->x_vec = x_vec;
+		cam->y_vec = vec_normalize(vec_crossprod(cam->orient, x_vec));
 	}
 }

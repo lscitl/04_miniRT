@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 22:46:24 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:20:26 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 20:52:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int	key_hook(int keycode, t_vars *vars)
 		{
 			i = (i + 1) % (vars->map->cam_cnt);
 			printf("Change to Cam index %d\n", i);
+			vars->map->cam_idx = i;
 			draw_image(vars, vars->map, &vars->map->cam[i]);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:45:41 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 20:49:32 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,7 @@ typedef struct s_map_info
 	int					light_cnt;
 	int					cam_cnt;
 	int					obj_cnt;
+	int					cam_idx;
 }	t_map_info;
 
 typedef struct s_vars

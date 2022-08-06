@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:25:44 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 20:55:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	init_var_and_set_map_data(t_vars *vars, char *arg)
 	map_parsing(arg, &map);
 	ft_memset(vars, 0, sizeof(t_vars));
 	vars->map = ft_malloc(sizeof(t_map_info));
+	ft_memset(vars->map, 0, sizeof(t_map_info));
 	set_map_info(vars, &map);
 	vars->mlx = mlx_init();
 	if (vars->mlx == NULL)

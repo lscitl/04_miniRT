@@ -1,0 +1,14 @@
+A	0.2					         				255,255,255
+
+C	0,5,50		0,0,-1       80
+C	0,-40,-20	0,1,0       80
+C	0,5,-90		0,0,1       80
+
+L	-40,0,20 					0.7				255,200,200
+L	-40,0,-60 					0.7				200,200,255
+L	30,10,-20 					0.7				200,255,200
+
+co	15,-15,-20		0,1,0.3		14.2	20	bm ./texture/block_normal.xpm		tx ./texture/block.xpm
+co	-15,10,-20		0,1,-0.3		14.2	20		tx ./texture/rock.xpm
+co	15,10,-20		0,1,-0.3		14.2	20	bm ./texture/rock_normal.xpm		tx ./texture/rock.xpm
+co	-15,-15,-20		0,1,0.3		14.2	20			tx ./texture/block.xpm

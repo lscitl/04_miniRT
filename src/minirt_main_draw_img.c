@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 20:09:43 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:02:29 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 20:51:45 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,13 @@ static void	put_pixel_in_img(t_vars *vars, t_hit_info *info, int x, int y)
 {
 	t_color	color;
 	int		y_mlx;
+	int		idx;
 
 	y_mlx = SCRN_HEIGHT - y - 1;
 	if (info->distance < DBL_MAX)
 	{
-		phong_reflection(vars->map, info, vars->map->cam->orient_neg);
+		idx = vars->map->cam_idx;
+		phong_reflection(vars->map, info, vars->map->cam[idx].orient_neg);
 		color = calculate_color(&info->phong, info);
 		my_mlx_pixel_put(&vars->img, x, y_mlx, convert_color_to_int(color));
 	}

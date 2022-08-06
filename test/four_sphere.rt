@@ -1,0 +1,11 @@
+A	0.2					         				255,255,255
+
+C	0,0,50		0,0,-1       80
+C	0,0,-90		0,0,1       80
+L	-40,0,20 					0.7				255,255,255
+L	40,0,-60 					0.7				255,255,255
+
+sp	10,10,-20	            		20		bm ./texture/rock_normal.xpm   tx ./texture/rock.xpm 	1 0.5 64
+sp	-10,10,-20	            		20		cb 4
+sp	10,-10,-20	            		20		bm ./texture/earthmap_normal.xpm   tx ./texture/earthmap.xpm 	1 0.5 64
+sp	-10,-10,-20	            		20		cb 2
