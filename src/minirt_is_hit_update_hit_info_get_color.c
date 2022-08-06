@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:52:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:01:58 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 18:35:04 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ static t_color	get_color_tx(t_obj_info *obj, t_hit_info *info)
 t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj)
 {
 	t_vec	norm;
-	t_vec	cone_top;
 	t_vec	diff;
 
 	diff = vec_minus(point, obj->pos);
@@ -113,9 +112,8 @@ t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj)
 	}
 	else if (obj->type == CONE)
 	{
-		cone_top = vec_plus(obj->pos, vec_scale(obj->orient, obj->height));
-		norm = vec_normalize(vec_crossprod(vec_minus(cone_top, point), \
-											vec_crossprod(diff, obj->orient)));
+		norm = vec_normalize(vec_crossprod(vec_minus(vec_scale(obj->orient, \
+						obj->height), diff), vec_crossprod(diff, obj->orient)));
 	}
 	else
 		norm = obj->orient;
