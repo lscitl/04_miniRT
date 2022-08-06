@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 22:46:24 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 13:57:15 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 17:20:26 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,12 @@ int	key_hook(int keycode, t_vars *vars)
 	}
 	if (keycode == KEY_1)
 	{
-		i = (i + 1) % (vars->map->cam_cnt);
-		printf("Change to Cam index %d\n", i);
+		if (vars->map->cam_cnt > 1)
+		{
+			i = (i + 1) % (vars->map->cam_cnt);
+			printf("Change to Cam index %d\n", i);
+			draw_image(vars, vars->map, &vars->map->cam[i]);
+		}
 	}
-	draw_image(vars, vars->map, &vars->map->cam[i]);
 	return (EXIT_SUCCESS);
 }

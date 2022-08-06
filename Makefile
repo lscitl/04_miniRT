@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/06 16:43:55 by chanhpar         ###   ########.fr        #
+#    Updated: 2022/08/06 17:20:51 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,8 +38,7 @@ SRC				:=	minirt_main.c \
 					minirt_utils_math_1.c \
 					minirt_utils_math_2.c \
 					minirt_utils_math_3.c \
-					minirt_utils.c \
-					print_map_for_debugging.c
+					minirt_utils.c
 
 SRCS			:=	$(addprefix $(SRCS_DIR)/, $(SRC))
 OBJS			:=	$(SRC:%.c=$(OBJS_DIR)/%.o)
