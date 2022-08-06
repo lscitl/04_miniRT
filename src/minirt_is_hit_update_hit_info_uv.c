@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:52:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:14:33 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 13:05:57 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	get_uv_mapping(t_obj_info *obj, t_hit_info *info, t_uv_map *uv_map)
 	else
 	{
 		h = vec_scale(obj->orient, -vec_dotprod(info->hit_point, obj->orient));
-		p = vec_minus(vec_minus(info->hit_point, h), obj->pos);
+		p = vec_minus(vec_plus(info->hit_point, h), obj->pos);
 		// uv_map->v = atan2(-vec_dotprod(p, info->uv_map.v_vec), vec_dotprod(p, info->uv_map.u_vec)) / (M_PI);
 		uv_map->u = acos(vec_dotprod(vec_normalize(vec_minus(vec_minus(info->hit_point, obj->pos), vec_scale(obj->orient, vec_dotprod((vec_minus(info->hit_point, obj->pos)), obj->orient)))), uv_map->u_vec)) / M_PI;
 		uv_map->v = vec_dotprod(obj->orient, vec_minus(info->hit_point, obj->pos)) / obj->height;
