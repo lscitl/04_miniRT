@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 19:58:09 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:22:23 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 17:54:14 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,33 @@ void	free_map(t_map *map)
 
 void	free_map_info(t_map_info *map)
 {
+	int	i;
+
 	free(map->light);
 	free(map->cam);
+	i = 0;
+	while (i < map->obj_cnt)
+	{
+		if (map->obj[i].surface & BUMP_MAP)
+			mlx_destroy_image(map->obj[i].bm.mlx, map->obj[i].bm.img);
+		if (map->obj[i].surface & TEXTURE)
+			mlx_destroy_image(map->obj[i].tx.mlx, map->obj[i].tx.img);
+		if (map->obj[i].type == CYLINDER)
+			i += 2;
+		else if (map->obj[i].type == CONE)
+			i += 1;
+		i++;
+	}
 	free(map->obj);
 	free(map);
 }
 
 void	open_texture_img(t_data *img, char *file_name)
 {
-	void	*mlx;
-
-	mlx = mlx_init();
-	if (mlx == NULL)
+	img->mlx = mlx_init();
+	if (img->mlx == NULL)
 		exit(EXIT_FAILURE);
-	img->img = mlx_xpm_file_to_image(mlx, file_name, &img->w, &img->h);
+	img->img = mlx_xpm_file_to_image(img->mlx, file_name, &img->w, &img->h);
 	if (img->img == NULL)
 		exit(EXIT_FAILURE);
 	img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, \

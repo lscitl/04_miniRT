@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:05:20 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 17:45:41 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,13 @@
 enum	e_surface
 {
 	CHECKER_BOARD = 1,
-	TEXTURE = 2,
-	BUMP_MAP = 4
+	TEXTURE = 1 << 1,
+	BUMP_MAP = 1 << 2
 };
 
 typedef struct s_data
 {
+	void	*mlx;
 	void	*img;
 	char	*addr;
 	int		bits_per_pixel;
@@ -196,13 +197,10 @@ t_color	add_color(t_color c1, t_color c2);
 t_color	set_color_from_int(int color_int);
 
 // minirt_utils.c
-void	free_map_info(t_map_info *map);
-void	free_map(t_map *map);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 int		get_mlx_pixel_color(t_data *data, int x, int y);
+void	free_map(t_map *map);
+void	free_map_info(t_map_info *map);
 void	open_texture_img(t_data *img, char *file_name);
-
-//test
-void	print_map_info(t_map_info *map);
 
 #endif
