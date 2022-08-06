@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/21 16:10:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:16:25 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 18:04:51 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	set_obj(t_map *map, char **args)
 {
 	t_obj	*obj;
 	int		obj_type;
+	int		exit_flag;
 
 	obj_type = set_obj_type(*args);
 	if (obj_type == NONE)
@@ -29,11 +30,14 @@ int	set_obj(t_map *map, char **args)
 	ft_memset(obj, 0, sizeof(t_obj));
 	obj->type = obj_type;
 	if (obj_type == PLANE)
-		return (set_plane(map, obj, args));
+		exit_flag = (set_plane(map, obj, args));
 	else if (obj_type == SPHERE)
-		return (set_sphere(map, obj, args));
+		exit_flag = (set_sphere(map, obj, args));
 	else
-		return (set_cylinder_and_cone(map, obj, args));
+		exit_flag = (set_cylinder_and_cone(map, obj, args));
+	if (exit_flag == EXIT_FAILURE)
+		free(obj);
+	return (exit_flag);
 }
 
 static int	set_obj_type(char *identifier)

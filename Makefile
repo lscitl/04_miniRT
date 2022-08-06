@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/06 17:55:14 by seseo            ###   ########.fr        #
+#    Updated: 2022/08/06 18:21:45 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ SRC				:=	minirt_main.c \
 					minirt_main_initialize.c \
 					minirt_main_mlx_hook.c \
 					minirt_map_parsing_main.c \
-					minirt_map_parsing_set_light_and_cam.c \
+					minirt_map_parsing_set_cam.c \
+					minirt_map_parsing_set_light.c \
 					minirt_map_parsing_set_map_data.c \
 					minirt_map_parsing_set_obj.c \
 					minirt_map_parsing_utils_lst.c \
