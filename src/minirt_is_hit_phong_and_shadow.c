@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 15:53:53 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 16:29:51 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 17:03:35 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ static double	is_in_shadow(t_map_info *map, t_hit_info *info, t_vec light_pos)
 
 	sdw_info = *info;
 	sdw_info.distance = DBL_MAX;
-	// sdw_info.shadow_flag = FALSE;
 	sdw_info.ray.direction = \
 		vec_normalize(vec_minus(light_pos, info->hit_point));
 	sdw_info.ray.orig = \

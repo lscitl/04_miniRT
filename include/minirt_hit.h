@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 16:27:16 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 17:02:10 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ t_phong	phong_reflection(t_map_info *map, t_hit_info *info, t_vec v);
 
 // minirt_is_hit_update_hit_info_get_color.c
 t_color	get_point_color(t_obj_info *obj, t_hit_info *info);
+t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj);
 
 // minirt_is_hit_update_hit_info_uv.c
 void	get_uv_mapping(t_obj_info *obj, t_hit_info *info, t_uv_map *uv_map);

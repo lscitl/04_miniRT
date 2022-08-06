@@ -6,53 +6,44 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:52:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 15:02:03 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 17:01:58 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt_hit.h"
 
-static t_color	get_color_from_tx(t_obj_info *obj, t_hit_info *info);
+static t_color	get_color_tx(t_obj_info *obj, t_hit_info *info);
 static void		update_n_vec_from_bm(t_obj_info *obj, t_hit_info *info);
-static t_vec	get_n_vec_from_bm(t_obj_info *obj, t_hit_info *info, int x, int y);
+static t_vec	get_n_vec_bm(t_obj_info *obj, t_hit_info *info, int x, int y);
 
 t_color	get_point_color(t_obj_info *obj, t_hit_info *info)
 {
 	t_color	color;
-	double	scale;
 	int		flag;
+	double	scale;
 
 	get_uv_mapping(obj, info, &info->uv_map);
 	if (obj->surface & CHECKER_BOARD)
 	{
 		scale = obj->map_scale * M_PI / 4.0;
-		if (obj->type == PLANE || obj->type == CIRCLE)
-		{
-			flag = (floor(info->uv_map.u / scale) + floor(info->uv_map.v / scale));
-		}
-		else
-		{
-			flag = (((int)(info->uv_map.u / scale)) \
-				+ ((int)(info->uv_map.v / scale)));
-		}
+		flag = (int)(info->uv_map.u / scale) + (int)(info->uv_map.v / scale);
 		if (flag % 2)
 			return (set_color(0, 0, 0));
-		else
-			return (set_color(1, 1, 1));
+		return (set_color(1, 1, 1));
 	}
 	else
 	{
 		if (obj->surface & BUMP_MAP)
 			update_n_vec_from_bm(obj, info);
 		if (obj->surface & TEXTURE)
-			color = get_color_from_tx(obj, info);
+			color = get_color_tx(obj, info);
 		else
 			color = obj->color;
 	}
 	return (color);
 }
 
-static t_vec	get_n_vec_from_bm(t_obj_info *obj, t_hit_info *info, int x, int y)
+static t_vec	get_n_vec_bm(t_obj_info *obj, t_hit_info *info, int x, int y)
 {
 	t_vec			ret;
 	t_vec			bm_norm;
@@ -81,27 +72,54 @@ static void	update_n_vec_from_bm(t_obj_info *obj, t_hit_info *info)
 	int		x;
 	int		y;
 
-	x = ((int)floor(info->uv_map.u * BM_TX_SCALE)) % obj->bm.w;
-	y = ((int)floor(info->uv_map.v * BM_TX_SCALE)) % obj->bm.h;
+	x = ((int)(info->uv_map.u * BM_TX_SCALE)) % obj->bm.w;
+	y = ((int)(info->uv_map.v * BM_TX_SCALE)) % obj->bm.h;
 	if (x < 0)
 		x += obj->bm.w;
 	if (y < 0)
 		y += obj->bm.h;
-	info->norm_vec = get_n_vec_from_bm(obj, info, x, y);
+	info->norm_vec = get_n_vec_bm(obj, info, x, y);
 }
 
-static t_color	get_color_from_tx(t_obj_info *obj, t_hit_info *info)
+static t_color	get_color_tx(t_obj_info *obj, t_hit_info *info)
 {
 	t_color	color;
 	int		x;
 	int		y;
 
-	x = ((int)floor(info->uv_map.u * BM_TX_SCALE)) % obj->tx.w;
-	y = ((int)floor(info->uv_map.v * BM_TX_SCALE)) % obj->tx.h;
+	x = ((int)(info->uv_map.u * BM_TX_SCALE)) % obj->tx.w;
+	y = ((int)(info->uv_map.v * BM_TX_SCALE)) % obj->tx.h;
 	if (x < 0)
 		x += obj->tx.w;
 	if (y < 0)
 		y += obj->tx.h;
 	color = set_color_from_int(get_mlx_pixel_color(&obj->tx, x, y));
 	return (color);
+}
+
+t_vec	get_normal_vector(t_vec dir, t_vec point, t_obj_info *obj)
+{
+	t_vec	norm;
+	t_vec	cone_top;
+	t_vec	diff;
+
+	diff = vec_minus(point, obj->pos);
+	if (obj->type == SPHERE)
+		norm = vec_normalize(diff);
+	else if (obj->type == CYLINDER)
+	{
+		norm = vec_normalize(vec_crossprod(obj->orient, \
+											vec_crossprod(diff, obj->orient)));
+	}
+	else if (obj->type == CONE)
+	{
+		cone_top = vec_plus(obj->pos, vec_scale(obj->orient, obj->height));
+		norm = vec_normalize(vec_crossprod(vec_minus(cone_top, point), \
+											vec_crossprod(diff, obj->orient)));
+	}
+	else
+		norm = obj->orient;
+	if (vec_dotprod(norm, dir) > 0)
+		return (vec_scale(norm, (double)-1));
+	return (norm);
 }
