@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 20:56:04 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/05 21:30:47 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 13:26:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	set_bm(t_obj *obj, char **args)
 			obj->bm = ft_strdup(args[1]);
 		else
 		{
-			printf("img file is not .xpm\n");
+			ft_putstr_fd("img file is not .xpm\n", 2);
 			return (EXIT_FAILURE);
 		}
 		if (args[2])

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:52:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:15:15 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 14:37:08 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,20 @@ t_color	get_point_color(t_obj_info *obj, t_hit_info *info)
 	get_uv_mapping(obj, info, &info->uv_map);
 	if (obj->surface & CHECKER_BOARD)
 	{
-		scale = obj->map_scale;
+		scale = obj->map_scale * M_PI / 4.0;
 		if (obj->type == PLANE || obj->type == CIRCLE)
 		{
 			flag = (floor(info->uv_map.u / scale) + floor(info->uv_map.v / scale));
 		}
+		else if (obj->type == SPHERE)
+		{
+			flag = (floor(info->uv_map.u / scale) \
+				+ floor(info->uv_map.v / scale));
+		}
 		else
 		{
-			flag = (floor(info->uv_map.u * 2 * M_PI * obj->radius / scale) + floor(info->uv_map.v * vec_dotprod(obj->orient, vec_minus(info->hit_point, obj->pos)) / scale));
+			flag = (((int)(info->uv_map.u / scale)) \
+				+ ((int)(info->uv_map.v / scale)));
 		}
 		if (flag % 2)
 			return (set_color(0, 0, 0));
@@ -88,6 +94,11 @@ static void	update_n_vec_from_bm(t_obj_info *obj, t_hit_info *info)
 			x += obj->bm.w;
 		if (y < 0)
 			y += obj->bm.h;
+	}
+	else if (obj->type == SPHERE)
+	{
+		x = ((int)floor(info->uv_map.u * (obj->bm.w))) % obj->bm.w;
+		y = ((int)floor(info->uv_map.v * (obj->bm.h))) % obj->bm.h;
 	}
 	else
 	{

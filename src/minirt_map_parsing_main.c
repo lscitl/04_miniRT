@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 12:46:46 by chanhpar         ###   ########.fr       */
+/*   Updated: 2022/08/06 13:27:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	map_parsing(char *file_path, t_map *map)
 		check_invalid_map(map) == EXIT_FAILURE)
 	{
 		free_strs(map_args);
-		ft_putendl_fd("minirt: Map Error", 2);
+		ft_putstr_fd("minirt: Map Error\n", 2);
 		exit(EXIT_FAILURE);
 	}
 	free_strs(map_args);
@@ -41,7 +41,7 @@ static char	**get_map_args(char *file_path)
 
 	if (ft_strncmp(file_path + ft_strlen(file_path) - 3, ".rt", -1))
 	{
-		ft_putendl_fd("please input .rt file", 2);
+		ft_putstr_fd("please input .rt file\n", 2);
 		exit(EXIT_FAILURE);
 	}
 	fd = open(file_path, O_RDONLY);
