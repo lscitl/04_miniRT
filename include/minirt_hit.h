@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:15:05 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 15:00:48 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "minirt.h"
 
 # define LIGHT_LEN_LIMIT 4000
-# define PLANE_TX_SCALE 20
+# define BM_TX_SCALE 25
 
 typedef struct s_uv_map
 {

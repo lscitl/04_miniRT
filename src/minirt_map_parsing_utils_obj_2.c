@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 20:56:04 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 13:26:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 15:24:33 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	set_cb(t_obj *obj, char **args)
 	{
 		obj->surface = CHECKER_BOARD;
 		obj->map_scale = strtod(args[1], &end);
-		if (*end)
+		if (*end || is_zero(obj->map_scale))
 			return (EXIT_FAILURE);
 		if (args[2])
 			return (set_phong(obj, &args[2]));

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:52:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 14:29:01 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 15:16:11 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,17 @@ void	get_uv_mapping(t_obj_info *obj, t_hit_info *info, t_uv_map *uv_map)
 	t_vec	d;
 	double	costh;
 
-	find_uv_unit_vec(obj->orient, &info->uv_map.u_vec, &info->uv_map.v_vec);
+	if (obj->type != SPHERE)
+		find_uv_unit_vec(obj->orient, &info->uv_map.u_vec, &info->uv_map.v_vec);
+	else
+	{
+		info->uv_map.u_vec.x = 1;
+		info->uv_map.u_vec.y = 0;
+		info->uv_map.u_vec.z = 0;
+		info->uv_map.v_vec.x = 0;
+		info->uv_map.v_vec.y = 1;
+		info->uv_map.v_vec.z = 0;
+	}
 	if (obj->type == PLANE || obj->type == CIRCLE)
 	{
 		uv_map->u = \
@@ -38,7 +48,6 @@ void	get_uv_mapping(t_obj_info *obj, t_hit_info *info, t_uv_map *uv_map)
 	else if (obj->type == SPHERE)
 	{
 		d = vec_normalize(vec_minus(info->hit_point, obj->pos));
-		// d = vec_normalize(vec_minus(obj->pos, info->hit_point));
 		uv_map->u = (M_PI / 2.0 + (atan2(d.z, -d.x))) * obj->radius;
 		uv_map->v = acos(-d.y) * obj->radius;
 		// uv_map->u = 0.5 + atan2(d.x, d.z) / (2.0 * M_PI);
@@ -51,11 +60,6 @@ void	get_uv_mapping(t_obj_info *obj, t_hit_info *info, t_uv_map *uv_map)
 		costh = vec_dotprod(vec_normalize(vec_minus(tmp, h)), uv_map->u_vec);
 		uv_map->u = acos(costh) * obj->radius;
 		uv_map->v = vec_dotprod(vec_minus(info->hit_point, obj->pos), obj->orient);
-		// uv_map->v = atan2(-vec_dotprod(p, info->uv_map.v_vec), vec_dotprod(p, info->uv_map.u_vec));
-		// uv_map->u = acos(vec_dotprod(vec_normalize(vec_minus(vec_minus(info->hit_point, obj->pos), vec_scale(obj->orient, vec_dotprod((vec_minus(info->hit_point, obj->pos)), obj->orient)))), uv_map->u_vec)) / M_PI;
-		// uv_map->v = vec_dotprod(obj->orient, vec_minus(info->hit_point, obj->pos)) / obj->height;
-		// if (obj->type == CONE)
-		// 	uv_map->v = 1.0 - uv_map->v;
 	}
 }
 

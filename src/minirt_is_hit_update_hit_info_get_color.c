@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/05 23:52:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 14:37:08 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 15:02:03 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,6 @@ t_color	get_point_color(t_obj_info *obj, t_hit_info *info)
 		if (obj->type == PLANE || obj->type == CIRCLE)
 		{
 			flag = (floor(info->uv_map.u / scale) + floor(info->uv_map.v / scale));
-		}
-		else if (obj->type == SPHERE)
-		{
-			flag = (floor(info->uv_map.u / scale) \
-				+ floor(info->uv_map.v / scale));
 		}
 		else
 		{
@@ -86,25 +81,12 @@ static void	update_n_vec_from_bm(t_obj_info *obj, t_hit_info *info)
 	int		x;
 	int		y;
 
-	if (obj->type == PLANE || obj->type == CIRCLE)
-	{
-		x = ((int)floor(info->uv_map.u * PLANE_TX_SCALE)) % obj->bm.w;
-		y = ((int)floor(info->uv_map.v * PLANE_TX_SCALE)) % obj->bm.h;
-		if (x < 0)
-			x += obj->bm.w;
-		if (y < 0)
-			y += obj->bm.h;
-	}
-	else if (obj->type == SPHERE)
-	{
-		x = ((int)floor(info->uv_map.u * (obj->bm.w))) % obj->bm.w;
-		y = ((int)floor(info->uv_map.v * (obj->bm.h))) % obj->bm.h;
-	}
-	else
-	{
-		x = ((int)floor(info->uv_map.u * (obj->bm.w))) % obj->bm.w;
-		y = ((int)floor(info->uv_map.v * (obj->bm.h))) % obj->bm.h;
-	}
+	x = ((int)floor(info->uv_map.u * BM_TX_SCALE)) % obj->bm.w;
+	y = ((int)floor(info->uv_map.v * BM_TX_SCALE)) % obj->bm.h;
+	if (x < 0)
+		x += obj->bm.w;
+	if (y < 0)
+		y += obj->bm.h;
 	info->norm_vec = get_n_vec_from_bm(obj, info, x, y);
 }
 
@@ -114,20 +96,12 @@ static t_color	get_color_from_tx(t_obj_info *obj, t_hit_info *info)
 	int		x;
 	int		y;
 
-	if (obj->type == PLANE || obj->type == CIRCLE)
-	{
-		x = ((int)floor(info->uv_map.u * PLANE_TX_SCALE)) % obj->tx.w;
-		y = ((int)floor(info->uv_map.v * PLANE_TX_SCALE)) % obj->tx.h;
-		if (x < 0)
-			x += obj->tx.w;
-		if (y < 0)
-			y += obj->tx.h;
-	}
-	else
-	{
-		x = ((int)floor(info->uv_map.u * (obj->tx.w))) % obj->tx.w;
-		y = ((int)floor(info->uv_map.v * (obj->tx.h))) % obj->tx.h;
-	}
+	x = ((int)floor(info->uv_map.u * BM_TX_SCALE)) % obj->tx.w;
+	y = ((int)floor(info->uv_map.v * BM_TX_SCALE)) % obj->tx.h;
+	if (x < 0)
+		x += obj->tx.w;
+	if (y < 0)
+		y += obj->tx.h;
 	color = set_color_from_int(get_mlx_pixel_color(&obj->tx, x, y));
 	return (color);
 }

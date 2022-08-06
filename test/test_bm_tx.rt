@@ -1,0 +1,28 @@
+A	0.2					         				255,255,255
+
+C	0,0,20		0,0,-1       80
+C	0,0,-160		0,0,1       80
+L	-40,0,20 					0.7				255,255,255
+L	40,0,-160 					0.7				255,255,255
+
+pl	0,0,40			0,0,-1								bm ./texture/icecream_normal.xpm   tx ./texture/icecream.xpm 	1 0.5 64
+pl	0,0,-180		0,0,1								bm ./texture/icecream_normal.xpm   tx ./texture/icecream.xpm 	1 0.5 64
+
+# pl	0,0,-180		0,0,1								bm ./texture/icecream_normal.xpm   tx ./texture/icecream.xpm 	1 0.5 64
+cy	25,-30,-70		0,1,0			14.2	30		bm ./texture/block_normal.xpm   tx ./texture/block.xpm 	1 0.5 64
+co	-25,-30,-70		0,1,0			14.2	30		bm ./texture/block_normal.xpm   tx ./texture/block.xpm 	1 0.5 64
+sp	0,-30,-70						14.2    		bm ./texture/block_normal.xpm   tx ./texture/block.xpm 	1 0.5 64
+
+# cy	25,-30,-70		0,1,0			14.2	30		   tx ./texture/icecream.xpm 	1 0.5 64
+# co	-25,-30,-70		0,1,0			14.2	30		   tx ./texture/icecream.xpm 	1 0.5 64
+# sp	0,-30,-70						14.2    		   tx ./texture/icecream.xpm 	1 0.5 64
+
+
+# cy	25,5,-70		0,1,0			14.2	30		bm ./texture/icecream_normal.xpm   tx ./texture/icecream.xpm 	1 0.5 64
+# co	-25,5,-70		0,1,0			14.2	30		bm ./texture/icecream_normal.xpm   tx ./texture/icecream.xpm 	1 0.5 64
+# sp	0,5,-70							14.2			bm ./texture/icecream_normal.xpm   tx ./texture/icecream.xpm 	1 0.5 64
+
+
+cy	25,5,-70		0,1,0			14.2	30		   tx ./texture/block.xpm 	1 0.5 64
+co	-25,5,-70		0,1,0			14.2	30		   tx ./texture/block.xpm 	1 0.5 64
+sp	0,5,-70							14.2			   tx ./texture/block.xpm 	1 0.5 64

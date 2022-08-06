@@ -3,6 +3,5 @@ A	0.2					         				255,255,255
 C	0,0,50		0,0,-1       80
 L	-40,0,20 					0.7				255,255,255
 
-# sp	10,0,-20	            		20		bm ./texture/block_normal.xpm   tx ./texture/block.xpm 	1 0.5 32
-sp	10,0,-20	            		10		cb 8
-sp	-10,0,-20	            		20		cb 8
+sp	10,0,-20	            		20		bm ./texture/block_normal.xpm   tx ./texture/block.xpm 	1 0.5 32
+sp	-10,0,-20	            		20		cb 4
