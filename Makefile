@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/06 01:35:57 by seseo            ###   ########.fr        #
+#    Updated: 2022/08/06 16:41:35 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,6 +53,7 @@ CC				:=	cc
 RM				:=	rm -rf
 CFLAGS			:=	-Wall -Wextra -Werror -g #-fsanitize=address
 INC				:=	-I$(LFT_PATH)/include -Iinclude -I$(MLX_PATH)
+INC_PATH		:=	include
 LIB_PATH		:=	-L$(MLX_PATH) -L$(LFT_PATH)
 LIB				:=	-lft -lmlx
 FRAMEWORK		:=	-framework OpenGL -framework AppKit
@@ -81,6 +82,9 @@ fclean			:	clean
 					@$(MAKE) -C $(MLX_PATH) clean
 					$(RM) libmlx.dylib
 					$(RM) $(NAME)
+
+cre				:	clean
+					@$(MAKE) all
 
 re				:	fclean
 					@$(MAKE) all
