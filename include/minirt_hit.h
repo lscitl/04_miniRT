@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 17:02:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 17:09:53 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,6 @@
 
 # define LIGHT_LEN_LIMIT 4000
 # define BM_TX_SCALE 25
-
-typedef struct s_uv_map
-{
-	double	u;
-	double	v;
-	t_vec	u_vec;
-	t_vec	v_vec;
-}	t_uv_map;
 
 // vec_dotprod(normal_vector, ray.direction);
 // (orig + t * dir) hit object

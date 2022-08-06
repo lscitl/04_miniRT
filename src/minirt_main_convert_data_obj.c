@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 14:51:57 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:36:34 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 17:16:40 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	set_obj_info_general_var(t_obj_info *obj_info, t_obj *obj);
 static int	set_cylinder_and_cone_info(t_obj_info *obj_info);
+static void	find_uv_unit_vec(t_obj_info *obj);
 
 void	set_obj_info(t_map_info *map, t_obj *obj)
 {
@@ -49,6 +50,7 @@ static void	set_obj_info_general_var(t_obj_info *obj_info, t_obj *obj)
 	obj_info->kd = obj->kd;
 	obj_info->ks = obj->ks;
 	obj_info->alpha = obj->alpha;
+	find_uv_unit_vec(obj_info);
 }
 
 static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
@@ -73,4 +75,29 @@ static int	set_cylinder_and_cone_info(t_obj_info *obj_info)
 		return (1);
 	}
 	return (0);
+}
+
+static void	find_uv_unit_vec(t_obj_info *obj)
+{
+	const t_vec	x_vec = {1, 0, 0};
+	const t_vec	y_vec = {0, 1, 0};
+
+	if (obj->type == SPHERE)
+	{
+		ft_memset(&(obj->uv_map), 0, sizeof(obj->uv_map));
+		obj->uv_map.u_vec.x = 1;
+		obj->uv_map.v_vec.y = 1;
+		return ;
+	}
+	if (is_zero(fabs(obj->orient.y) - 1) == FALSE)
+	{
+		obj->uv_map.u_vec = vec_normalize(vec_crossprod(y_vec, obj->orient));
+		obj->uv_map.v_vec = vec_normalize(vec_crossprod(obj->orient, \
+					obj->uv_map.u_vec));
+	}
+	else
+	{
+		obj->uv_map.v_vec = x_vec;
+		obj->uv_map.u_vec = vec_crossprod(obj->orient, obj->uv_map.v_vec);
+	}
 }

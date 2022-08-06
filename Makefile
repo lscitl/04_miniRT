@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/08/06 16:41:35 by seseo            ###   ########.fr        #
+#    Updated: 2022/08/06 16:43:55 by chanhpar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -91,4 +91,4 @@ re				:	fclean
 
 bonus			:	all
 
-.PHONY			:	all clean fclean re bonus
+.PHONY			:	all clean fclean cre re bonus

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 16:36:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 01:31:29 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 17:05:20 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,14 @@ typedef struct s_data
 	int		endian;
 }	t_data;
 
+typedef struct s_uv_map
+{
+	double	u;
+	double	v;
+	t_vec	u_vec;
+	t_vec	v_vec;
+}	t_uv_map;
+
 typedef struct s_phong
 {
 	double	ka;
@@ -95,23 +103,24 @@ typedef struct s_phong
 
 typedef struct s_obj_info
 {
-	t_vec	pos;
-	t_vec	orient;
-	t_color	color;
-	t_data	tx;
-	t_data	bm;
-	double	radius;
-	double	r_sqare;
-	double	rsq_div_hsq;
-	double	rsq_div_h;
-	double	map_scale;
-	double	height;
-	double	width;
-	double	kd;
-	double	ks;
-	double	alpha;
-	int		type;
-	int		surface;
+	t_vec		pos;
+	t_vec		orient;
+	t_color		color;
+	t_data		tx;
+	t_data		bm;
+	t_uv_map	uv_map;
+	double		radius;
+	double		r_sqare;
+	double		rsq_div_hsq;
+	double		rsq_div_h;
+	double		map_scale;
+	double		height;
+	double		width;
+	double		kd;
+	double		ks;
+	double		alpha;
+	int			type;
+	int			surface;
 }	t_obj_info;
 
 typedef struct s_ambi_light_info
@@ -192,7 +201,6 @@ void	free_map(t_map *map);
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 int		get_mlx_pixel_color(t_data *data, int x, int y);
 void	open_texture_img(t_data *img, char *file_name);
-
 
 //test
 void	print_map_info(t_map_info *map);
