@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 15:17:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 13:27:46 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 21:26:11 by chanhpar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static void	get_map_data_to_buffer(t_buffer *buf, int fd)
 
 static int	check_invalid_map(t_map *map)
 {
-	if (!map->light || !map->camera || !map->obj)
+	if (!map->camera)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
