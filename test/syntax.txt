@@ -8,10 +8,13 @@ L x,y,z ratio R,G,B
 C x,y,z dx,dy,dz fov
 
 [Plane]
-pl x,y,z nx,ny,nz R,G,B
+pl x,y,z nx,ny,nz [R,G,B] / bm / tx / cb
 
 [Sphere]
-sp x,y,z diameter R,G,B
+sp x,y,z diameter [R,G,B] / bm / tx / cb
 
 [Cylinder]
-cy x,y,z dx,dy,dz diameter height R,G,B
+cy x,y,z dx,dy,dz diameter height [R,G,B] / bm / tx / cb
+
+[Cone]
+cy x,y,z dx,dy,dz diameter height [R,G,B] / bm / tx / cb

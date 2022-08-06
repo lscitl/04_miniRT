@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 21:02:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/08/06 15:00:48 by seseo            ###   ########.fr       */
+/*   Updated: 2022/08/06 16:27:16 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,14 @@ typedef struct s_uv_map
 // (orig + t * dir) hit object
 typedef struct s_hit_info
 {
-	t_phong		phong;
+	t_ray		ray;
 	t_vec		hit_point;
-	t_color		color;
 	t_vec		norm_vec;
 	double		distance;
-	int			direction;
-	t_ray		ray;
+	t_obj_info	*obj;
+	t_phong		phong;
 	t_uv_map	uv_map;
-	int			shadow_flag;
+	t_color		color;
 }	t_hit_info;
 
 // minirt_is_hit_calc_coeff.c
